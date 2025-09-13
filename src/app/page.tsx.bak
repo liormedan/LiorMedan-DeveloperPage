@@ -1,0 +1,26 @@
+import HeroSpline from "@/components/HeroSpline";
+ 
+
+export default function Home() {
+  return (
+    <>
+      {/* Hero with Spline scene (no text) */}
+      <div className="relative overflow-hidden min-h-[560px] sm:min-h-[680px] flex items-center">
+        {/* Spline scene as background with in-scene labels */}
+        <HeroSpline />
+        {/* Readability overlays */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/30 dark:from-background/40 dark:via-background/25 dark:to-background/40" />
+        <div className="pointer-events-none absolute inset-0 [background:radial-gradient(ellipse_at_center,rgba(2,6,23,0.55),transparent_60%)] dark:[background:radial-gradient(ellipse_at_center,rgba(2,6,23,0.65),transparent_62%)]" />
+      </div>
+
+      {/* <Section> */}
+        <h2 className="text-2xl font-semibold mb-4">נבחרת פרויקטים</h2>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.slice(0, 6).map((p) => (
+            <ProjectCard key={p.title} {...p} />
+          ))}
+        </div>
+      {/* </Section> */}
+    </>
+  );
+}
