@@ -1,8 +1,51 @@
 import Image from "next/image";
+import Script from "next/script";
+import type { Metadata } from "next";
+
+export const generateMetadata = (): Metadata => {
+  const title = "Lior Medan - Developer";
+  const description = "Personal developer page";
+  const url = "https://example.com";
+  const imageUrl = `${url}/next.svg`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: title,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+  };
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Lior Medan - Developer",
+  url: "https://example.com",
+};
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+    <>
+      <Script
+        id="json-ld-home"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
@@ -99,5 +142,6 @@ export default function Home() {
         </a>
       </footer>
     </div>
+    </>
   );
 }
