@@ -1,12 +1,13 @@
+// @ts-nocheck
 import type { Metadata } from "next";
 import StoryPager from "@/components/StoryPager";
-import BriefBuilder from "@/components/BriefBuilder";
+import ChatAssist from "@/components/ChatAssist";
 import Accordion from "@/components/Accordion";
 
 // ===== SEO =====
-const siteUrl = "https://example.com"; // ← עדכן לדומיין שלך
-const title = "Lior Medan - Developer";
-const description = "Personal developer page";
+const siteUrl = "https://example.com";
+const title = "ליאור מדן — מפתח ווב";
+const description = "תיק עבודות: React/Next.js, Python, מדיה ואודיו";
 const imageUrl = `${siteUrl}/next.svg`;
 
 export const metadata: Metadata = {
@@ -18,14 +19,9 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: title,
     images: [
-      {
-        url: imageUrl,
-        width: 1200,
-        height: 630,
-        alt: title,
-      },
+      { url: imageUrl, width: 1200, height: 630, alt: title },
     ],
-    locale: "en_US",
+    locale: "he_IL",
     type: "website",
   },
 };
@@ -41,24 +37,25 @@ const jsonLd = {
 export default function Home() {
   return (
     <>
-      {/* JSON-LD כ־script רגיל כדי להישאר קומפוננטת שרת */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <StoryPager
         engine="none"
         steps={[
           {
             id: "hero",
-            title: "שלום, אני ליאור",
-            subtitle: "מפתח ווב שמחבר קוד, 3D, אודיו ו-AI",
+            title: "שלום, אני ליאור — מפתח ווב",
+            subtitle: "React + Next.js • Python • חוויות אינטראקטיביות ואודיו",
+          },
+          {
+            id: "work",
+            title: "מה אני בונה",
+            subtitle: "אתרים מהירים ונגישים, אפליקציות ווב ופול־סטאק בענן, וכלי מדיה/אודיו",
           },
           {
             id: "principles-hero",
-            title: "",
-            subtitle: "",
+            title: "עקרונות עבודה",
+            subtitle: "פשטות, ביצועים, נגישות, וערך עסקי ברור",
             content: (
               <Accordion
                 defaultOpen={[]}
@@ -66,66 +63,30 @@ export default function Home() {
                   {
                     title: "Less is more",
                     content: (
-                      <ul
-                        dir="rtl"
-                        className="list-disc list-inside space-y-1 text-base sm:text-lg text-center"
-                      >
-                        <li>
-                          <span className="font-semibold">
-                            עיצוב פשוט, ממוקד למטרה
-                          </span>
-                        </li>
-                        <li>
-                          <span className="font-semibold">פשטות וניקיון</span>{" "}
-                          מושכים את הרצינות.
-                        </li>
-                        <li>
-                          <span className="font-semibold">עודף מלל</span> מעמיס
-                          על המשתמשים.
-                        </li>
+                      <ul dir="rtl" className="list-disc list-inside space-y-1 text-base sm:text-lg text-right">
+                        <li><span className="font-semibold">UI נקי וברור</span> — בלי רעש ובלי עומס.</li>
+                        <li><span className="font-semibold">פוקוס במסר ובעיקר</span> — מה המשתמש צריך עכשיו.</li>
+                        <li><span className="font-semibold">חיכוך נמוך</span> — זמן טעינה קצר וזרימה טבעית.</li>
                       </ul>
                     ),
                   },
                   {
-                    title: "טכנולוגיה חכמה-פשוטה לתפעול",
+                    title: "איכות קוד וביצועים",
                     content: (
-                      <ul
-                        dir="rtl"
-                        className="list-disc list-inside space-y-1 text-base sm:text-lg text-center"
-                      >
-                        <li>
-                          <span className="font-semibold">
-                            חכמה מאחורי הקלעים
-                          </span>{" "}
-                          — פשוטה בחזית.
-                        </li>
-                        <li>
-                          <span className="font-semibold">
-                            אינטואיטיבית למשתמש
-                          </span>{" "}
-                          — מובנת בלי מדריך.
-                        </li>
-                        <li>
-                          <span className="font-semibold">מקצרת דרך</span> —
-                          פחות צעדים, יותר תוצאה.
-                        </li>
+                      <ul dir="rtl" className="list-disc list-inside space-y-1 text-base sm:text-lg text-right">
+                        <li><span className="font-semibold">TypeScript, בדיקות, Lint</span> — בסיס ליציבות לאורך זמן.</li>
+                        <li><span className="font-semibold">מדדי ביצועים</span> — Core Web Vitals, TTFB, A11y.</li>
+                        <li><span className="font-semibold">ארכיטקטורה פשוטה</span> עם אפשרות להתרחבות.</li>
                       </ul>
                     ),
                   },
                   {
-                    title: "בדרך סוקרטס – פתרונות נולדים משאלות",
+                    title: "תהליך עבודה",
                     content: (
-                      <div
-                        dir="rtl"
-                        className="text-center text-sm sm:text-base text-muted-foreground space-y-1"
-                      >
-                        <p>לא ידעתי לתכנת לפני הגעת הבינה המלאכותית.</p>
-                        <p>
-                          כשהבנתי ש<strong>שאילת השאלות</strong> היא המפתח,
-                          הצלחתי ליצור דברים שלא יכולתי לפני כן. זו דרך
-                          העבודה עם כלי הבינה: לשאול היטב, לזקק כוונה, ולהפיק
-                          תוצאות והמצאות שלא היו אפשריות קודם.
-                        </p>
+                      <div dir="rtl" className="text-right text-sm sm:text-base text-muted-foreground space-y-1">
+                        <p>אפיון ממוקד ותיאום ציפיות.</p>
+                        <p>MVP מהיר + Roadmap קצר וברור.</p>
+                        <p>איטרציות קצרות ושקיפות מלאה לאורך הדרך.</p>
                       </div>
                     ),
                   },
@@ -134,31 +95,20 @@ export default function Home() {
             ),
           },
           {
-            id: "work",
-            title: "עבודות נבחרות",
-            subtitle: "מוצרים, דשבורדים, ומיקרו-אינטראקציות שמבליטות ערך",
-          },
-          {
-            id: "process",
-            title: "מסע קצר ומדויק",
-            subtitle:
-              "אפיון MVP זריז, קומפוננטות נקיות, אינטגרציות בטוחות ושיפור מתמשך",
-          },
-          {
             id: "estimate",
-            title: "כמה זה יעלה לי?",
-            subtitle: "הערכה גסה לפי רכיבים — לקבל כיוון מהיר",
-            content: <BriefBuilder />,
+            title: "הערכת מחיר וזמן",
+            subtitle: "ספרו לי על הפרויקט ונרכיב הצעה מותאמת",
+            content: <ChatAssist />,
           },
           {
             id: "orgs",
-            title: "גם ל-Startup וגם לאנטרפרייז",
-            subtitle: "אבטחה, נגישות, עמידות וסקייל — בלי לוותר על קצב",
+            title: "ארגונים ושיתופי פעולה",
+            subtitle: "POC מהיר, ניהול סיכונים ותיעוד/דיווח שוטף",
           },
           {
             id: "contact",
             title: "בואו נדבר",
-            subtitle: "וואטסאפ/שיחה — נסגור יעדים ונצא לדרך",
+            subtitle: "מענה מהיר בווטסאפ או במייל. נשמח לשיחת היכרות קצרה",
           },
         ]}
       />

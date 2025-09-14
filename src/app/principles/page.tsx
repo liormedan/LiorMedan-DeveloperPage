@@ -3,7 +3,7 @@ import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 
-export default function PrinciplesPage() {
+function PrinciplesPageInner() {
   const search = useSearchParams();
   const p3 = search?.get("p3")?.trim();
 
@@ -44,5 +44,13 @@ export default function PrinciplesPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function PrinciplesPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <PrinciplesPageInner />
+    </React.Suspense>
   );
 }

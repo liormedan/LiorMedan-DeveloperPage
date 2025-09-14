@@ -4,6 +4,7 @@ import HeroThree from "@/components/HeroThree";
 import StepElements from "@/components/StepElements";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Star, Lightbulb, Wallet, Users, MessageSquare, Workflow, Terminal } from "lucide-react";
 
 export type StoryStep = {
   id: string;
@@ -11,6 +12,7 @@ export type StoryStep = {
   subtitle?: string;
   overlayAlign?: "center" | "right" | "left";
   content?: React.ReactNode; // optional rich content under the text
+  icon?: React.ReactNode; // optional icon to render above title
 };
 
 export default function StoryPager({ steps, engine = "three" as "three" | "spline" | "none" }: { steps: StoryStep[]; engine?: "three" | "spline" | "none" }) {
@@ -103,7 +105,53 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
 
   const step = steps[idx] || {};
   const nextStep = target != null ? steps[target] : null;
-  const align = step.overlayAlign || "center";
+  // Force centered overlay to avoid vertical jumping between slides
+  const align: "center" = "center";
+
+  const stepIcon = React.useMemo(() => {
+    if (step.icon) return step.icon;
+    switch (step.id) {
+      case "hero":
+        return <Star className="h-5 w-5" />;
+      case "work":
+        return <Workflow className="h-5 w-5" />;
+      case "principles-hero":
+        return <Lightbulb className="h-5 w-5" />;
+      case "process":
+        return <Workflow className="h-5 w-5" />;
+      case "estimate":
+        return <Wallet className="h-5 w-5" />;
+      case "orgs":
+        return <Users className="h-5 w-5" />;
+      case "contact":
+        return <MessageSquare className="h-5 w-5" />;
+      default:
+        return null;
+    }
+  }, [step.icon, step.id]);
+
+  const nextIcon = React.useMemo(() => {
+    if (!nextStep) return null;
+    if ((nextStep as any).icon) return (nextStep as any).icon as React.ReactNode;
+    switch (nextStep.id) {
+      case "hero":
+        return <Star className="h-5 w-5" />;
+      case "work":
+        return <Workflow className="h-5 w-5" />;
+      case "principles-hero":
+        return <Lightbulb className="h-5 w-5" />;
+      case "process":
+        return <Workflow className="h-5 w-5" />;
+      case "estimate":
+        return <Wallet className="h-5 w-5" />;
+      case "orgs":
+        return <Users className="h-5 w-5" />;
+      case "contact":
+        return <MessageSquare className="h-5 w-5" />;
+      default:
+        return null;
+    }
+  }, [nextStep]);
   const stepItems: Record<string, { text: string; x: string; y: string }[]> = {
     hero: [
       { text: "Next.js", x: "18%", y: "26%" },
@@ -155,46 +203,93 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
       )}
 
       {/* Overlay text/content */}
-      <div
-        className={
-          align === "right"
-            ? "absolute inset-y-0 right-0 w-full flex items-center justify-end pr-6"
-            : align === "left"
-            ? "absolute inset-y-0 left-0 w-full flex items-center justify-start pl-6"
-            : "absolute inset-0 flex items-center justify-center"
-        }
-      >
-        <div className="relative w-full max-w-3xl">
-          <div className={`${align === "center" ? "text-center" : "text-right"} px-6`} style={{ opacity: 1 - progress }}>
-            {step.title ? (
-              <h1 className="text-3xl sm:text-5xl font-bold">
-                {step.id === 'hero' ? (
-                  <span className="inline-block px-4 py-2 rounded-full bg-primary/10 border border-primary/30 shadow-sm backdrop-blur-sm ring-1 ring-primary/30">
-                    {step.title}
-                  </span>
-                ) : (
-                  step.title
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-full max-w-3xl h-[260px] sm:h-[280px] md:h-[320px]">
+          {/* Current step (stacked in place) */}
+          <div
+            className="absolute inset-0 px-6 flex items-center justify-center text-center"
+            style={{ opacity: 1 - progress, transform: `scale(${1 - progress * 0.02})` }}
+          >
+            <div className="inline-block w-full">
+              <div className="mx-auto max-w-3xl rounded-2xl border border-white/20 dark:border-white/10 bg-background/70 backdrop-blur-md shadow-xl ring-1 ring-black/5 dark:ring-white/10 p-5 sm:p-6">
+                {/* Accent bar */}
+                <div className="mx-auto mb-3 h-1 w-24 rounded-full bg-gradient-to-r from-primary to-fuchsia-500" />
+                {/* Icon badge */}
+                {stepIcon && (
+                  <div className="mx-auto mb-2 h-8 w-8 rounded-full grid place-items-center bg-primary/10 text-primary border border-primary/30">
+                    {stepIcon}
+                  </div>
                 )}
-              </h1>
-            ) : null}
-            {step.subtitle ? <p className="mt-3 text-base sm:text-lg text-muted-foreground">{step.subtitle}</p> : null}
-            {step.content ? <div className="mt-4">{step.content}</div> : null}
+                {step.title ? (
+                  <h1 className="text-3xl sm:text-5xl font-bold">
+                    {step.id === 'hero' ? (
+                      <span className="inline-block px-4 py-2 rounded-full bg-primary/10 border border-primary/30 shadow-sm backdrop-blur-sm ring-1 ring-primary/30">
+                        {step.title}
+                      </span>
+                    ) : (
+                      <span className="bg-gradient-to-r from-primary to-fuchsia-500 bg-clip-text text-transparent">
+                        {step.title}
+                      </span>
+                    )}
+                  </h1>
+                ) : null}
+                {step.subtitle ? (
+                  step.id === 'hero' ? (
+                    <div className="mt-3">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-primary to-fuchsia-500 text-white/95 shadow-sm ring-1 ring-white/20">
+                        <Terminal aria-hidden className="h-4 w-4 opacity-95" />
+                        {step.subtitle}
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-base sm:text-lg text-muted-foreground">{step.subtitle}</p>
+                  )
+                ) : null}
+                {step.content ? <div className="mt-4 text-left sm:text-center">{step.content}</div> : null}
+              </div>
+            </div>
           </div>
           {nextStep && (
-            <div className={`${align === "center" ? "text-center" : "text-right"} px-6 absolute inset-0`} style={{ opacity: progress }}>
-              {nextStep.title ? (
-                <h1 className="text-3xl sm:text-5xl font-bold">
-                  {nextStep.id === 'hero' ? (
-                    <span className="inline-block px-4 py-2 rounded-full bg-primary/10 border border-primary/30 shadow-sm backdrop-blur-sm ring-1 ring-primary/30">
-                      {nextStep.title}
-                    </span>
-                  ) : (
-                    nextStep.title
+            <div
+              className="px-6 absolute inset-0 flex items-center justify-center text-center"
+              style={{ opacity: progress, transform: `scale(${0.98 + progress * 0.02})` }}
+            >
+              <div className="inline-block w-full">
+                <div className="mx-auto max-w-3xl rounded-2xl border border-white/20 dark:border-white/10 bg-background/70 backdrop-blur-md shadow-xl ring-1 ring-black/5 dark:ring-white/10 p-5 sm:p-6">
+                  <div className="mx-auto mb-3 h-1 w-24 rounded-full bg-gradient-to-r from-primary to-fuchsia-500" />
+                  {nextIcon && (
+                    <div className="mx-auto mb-2 h-8 w-8 rounded-full grid place-items-center bg-primary/10 text-primary border border-primary/30">
+                      {nextIcon}
+                    </div>
                   )}
-                </h1>
-              ) : null}
-              {nextStep.subtitle ? <p className="mt-3 text-base sm:text-lg text-muted-foreground">{nextStep.subtitle}</p> : null}
-              {nextStep.content ? <div className="mt-4">{nextStep.content}</div> : null}
+                  {nextStep.title ? (
+                    <h1 className="text-3xl sm:text-5xl font-bold">
+                      {nextStep.id === 'hero' ? (
+                        <span className="inline-block px-4 py-2 rounded-full bg-primary/10 border border-primary/30 shadow-sm backdrop-blur-sm ring-1 ring-primary/30">
+                          {nextStep.title}
+                        </span>
+                      ) : (
+                        <span className="bg-gradient-to-r from-primary to-fuchsia-500 bg-clip-text text-transparent">
+                          {nextStep.title}
+                        </span>
+                      )}
+                    </h1>
+                  ) : null}
+                  {nextStep.subtitle ? (
+                    nextStep.id === 'hero' ? (
+                      <div className="mt-3">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-primary to-fuchsia-500 text-white/95 shadow-sm ring-1 ring-white/20">
+                          <Terminal aria-hidden className="h-4 w-4 opacity-95" />
+                          {nextStep.subtitle}
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-base sm:text-lg text-muted-foreground">{nextStep.subtitle}</p>
+                    )
+                  ) : null}
+                  {nextStep.content ? <div className="mt-4 text-left sm:text-center">{nextStep.content}</div> : null}
+                </div>
+              </div>
             </div>
           )}
         </div>

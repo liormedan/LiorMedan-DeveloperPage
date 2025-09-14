@@ -4,16 +4,14 @@ import ProjectCard from "@/components/ProjectCard";
 import { projects } from "@/data/projects";
 import { Button } from "@/components/ui/button";
 
-const allTags = Array.from(
-  new Set(projects.flatMap((p) => p.tags ?? []))
-).sort();
+const allTags = Array.from(new Set(projects.flatMap((p) => p.tags ?? []))).sort();
 
 export default function ProjectsPage() {
   const [tag, setTag] = React.useState<string | null>(null);
   const filtered = tag ? projects.filter((p) => p.tags?.includes(tag)) : projects;
 
   return (
-    <div className="container-fluid py-8">
+    <div className="container-fluid py-8" dir="rtl">
       <div className="flex flex-wrap gap-2 mb-6">
         <Button
           variant={tag === null ? "default" : "ghost"}
@@ -48,3 +46,4 @@ export default function ProjectsPage() {
     </div>
   );
 }
+

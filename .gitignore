@@ -42,6 +42,8 @@ next-env.d.ts
 # backups & temp files
 *.bak
 *.head
+*.tmp
+*.copy
 
 # IDEs and editors
 .vscode/

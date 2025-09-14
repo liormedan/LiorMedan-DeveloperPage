@@ -6,16 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, FolderOpen, FlaskConical, FileText, MessagesSquare, Mail } from "lucide-react";
+import { Home, FolderOpen, FlaskConical, FileText, MessagesSquare, Mail, Boxes } from "lucide-react";
 
 const links = [
-  { href: "/", label: "דף הבית", icon: Home },
+  { href: "/", label: "עמוד הבית", icon: Home },
   { href: "/projects", label: "פרויקטים", icon: FolderOpen },
-  { href: "/cases", label: "Case Studies", icon: FileText },
-  { href: "/playground", label: "Playground", icon: FlaskConical },
+  { href: "/templates", label: "תבניות", icon: Boxes },
+  { href: "/cases", label: "מחקרי מקרה", icon: FileText },
+  { href: "/playground", label: "מגרש משחקים", icon: FlaskConical },
   { href: "/quote", label: "הצעת מחיר", icon: MessagesSquare },
-  { href: "/principles", label: "כללי עבודה", icon: FileText },
-  { href: "/contact", label: "יצירת קשר", icon: Mail },
+  { href: "/principles", label: "עקרונות", icon: FileText },
+  { href: "/contact", label: "צור קשר", icon: Mail },
 ] as const;
 
 type NavMode = "compact" | "expanded" | "responsive";
@@ -41,7 +42,6 @@ function NavList({ onNavigate, mode = "responsive" }: { onNavigate?: () => void;
                 className="mx-2 my-1 flex items-center justify-center rounded-md p-2 transition-colors hover:bg-accent/40 data-[active=true]:bg-accent/60"
               >
                 <Icon size={18} className="opacity-90" />
-                {/* Tooltip on hover (appears to the left) */}
                 <div className="absolute right-full mr-2 hidden group/nav:hover:block">
                   <div className="whitespace-nowrap rounded-md bg-popover text-popover-foreground shadow px-2 py-1 text-xs border">
                     {label}
@@ -57,7 +57,6 @@ function NavList({ onNavigate, mode = "responsive" }: { onNavigate?: () => void;
                 <span>{label}</span>
               </div>
             ) : (
-              // responsive: icon only, reveal label when parent sidebar is hovered
               <div
                 data-active={active ? "true" : undefined}
                 className="mx-1 my-1 flex items-center rounded-md p-2 transition-colors hover:bg-accent/40 data-[active=true]:bg-accent/60"
@@ -66,7 +65,6 @@ function NavList({ onNavigate, mode = "responsive" }: { onNavigate?: () => void;
                 <span className="ml-2 text-sm whitespace-nowrap opacity-0 translate-x-2 transition-all duration-150 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 hidden group-hover/sidebar:inline">
                   {label}
                 </span>
-                {/* Tooltip only when sidebar is collapsed */}
                 <div className="absolute right-full mr-2 group-hover/sidebar:hidden hidden group/nav:hover:block">
                   <div className="whitespace-nowrap rounded-md bg-popover text-popover-foreground shadow px-2 py-1 text-xs border">
                     {label}
@@ -82,12 +80,11 @@ function NavList({ onNavigate, mode = "responsive" }: { onNavigate?: () => void;
 }
 
 export default function Sidebar() {
-  // Desktop sidebar (rtl: on the right) — compact only, no hover expansion
   return (
     <>
       <aside className="hidden lg:flex fixed top-0 bottom-0 right-0 z-40 w-14 flex-col items-stretch border-l bg-background/90 backdrop-blur">
         <div className="flex items-center justify-center h-14 w-full border-b">
-          <Link href="/" className="font-semibold text-sm" title="דף הבית" aria-label="דף הבית">ל</Link>
+          <Link href="/" className="font-semibold text-sm" title="עמוד הבית" aria-label="עמוד הבית">LM</Link>
         </div>
         <div className="flex-1 py-2 w-full">
           <NavList mode="compact" />
@@ -98,12 +95,11 @@ export default function Sidebar() {
           </div>
           <Separator className="my-2" />
           <div className="text-center">
-            <span className="text-[10px] text-muted-foreground">© 2025</span>
+            <span className="text-[10px] text-muted-foreground">© {new Date().getFullYear()}</span>
           </div>
         </div>
       </aside>
 
-      {/* Mobile sheet trigger (rtl: button at top-right) */}
       <div className="lg:hidden fixed top-4 right-4 z-50">
         <Sheet>
           <SheetTrigger asChild>
@@ -112,7 +108,7 @@ export default function Sidebar() {
           <SheetContent side="right" className="w-72">
             <div className="flex items-center justify-between mb-3">
               <Link href="/" className="font-semibold" onClick={() => {}}>
-                תפריט ניווט
+                תפריט
               </Link>
               <ThemeToggle />
             </div>
@@ -123,3 +119,4 @@ export default function Sidebar() {
     </>
   );
 }
+
