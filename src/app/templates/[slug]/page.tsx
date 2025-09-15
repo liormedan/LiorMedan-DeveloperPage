@@ -4,9 +4,7 @@ import { templates } from "@/data/templates";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export function generateStaticParams() {
-  return templates.map((t) => ({ slug: t.slug }));
-}
+
 
 type Props = {
   params: { slug: string };
