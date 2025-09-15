@@ -8,7 +8,12 @@ export function generateStaticParams() {
   return templates.map((t) => ({ slug: t.slug }));
 }
 
-export default function TemplateDetails({ params }: { params: { slug: string } }) {
+type Props = {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default function TemplateDetails({ params }: Props) {
   const tpl = templates.find((t) => t.slug === params.slug);
   if (!tpl) return notFound();
 

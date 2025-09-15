@@ -62,3 +62,5 @@ public/images/
 # Local design/config artifacts
 *.splinecode
 components.json
+
+.vercel
