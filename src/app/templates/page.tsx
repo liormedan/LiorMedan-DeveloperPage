@@ -46,8 +46,8 @@ export default function TemplatesPage() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((t) => (
-          <Link key={t.slug} href={`/templates/${t.slug}`} className="block">
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+          <div key={t.slug} className="block">
+            <Card className="overflow-hidden">
               {t.image ? (
                 <div
                   className="h-36 w-full bg-cover bg-center"
@@ -72,7 +72,7 @@ export default function TemplatesPage() {
                 </div>
               </div>
             </Card>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
