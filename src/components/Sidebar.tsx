@@ -12,8 +12,6 @@ const links = [
   { href: "/", label: "עמוד הבית", icon: Home },
   { href: "/projects", label: "פרויקטים", icon: FolderOpen },
   { href: "/templates", label: "תבניות", icon: Boxes },
-  { href: "/cases", label: "מחקרי מקרה", icon: FileText },
-  { href: "/playground", label: "מגרש משחקים", icon: FlaskConical },
   { href: "/quote", label: "הצעת מחיר", icon: MessagesSquare },
   { href: "/principles", label: "עקרונות", icon: FileText },
   { href: "/contact", label: "צור קשר", icon: Mail },
