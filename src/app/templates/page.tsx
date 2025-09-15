@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 const categories: { key: TemplateCategory; label: string }[] = [
-  { key: "frontend", label: "תבניות פרונט" },
-  { key: "fullstack", label: "פרונט + בקאנד" },
+  { key: "frontend", label: "פרונטאנד" },
+  { key: "fullstack", label: "פול‑סטאק" },
 ];
 
 export default function TemplatesPage() {
@@ -18,9 +18,9 @@ export default function TemplatesPage() {
   return (
     <div className="container-fluid py-8" dir="rtl">
       <div className="mb-6 space-y-2">
-        <h1 className="text-2xl font-semibold">תבניות מוכנות לקנייה</h1>
+        <h1 className="text-2xl font-semibold">תבניות מוכנות</h1>
         <p className="text-muted-foreground">
-          תבניות מסודרות לפי קטגוריות: פרונט בלבד או פרונט+בקאנד. ניתן לצפות בפרטים ולרכוש.
+          דפדפו בתבניות לבניית אתרים ואפליקציות. בחרו קטגוריה: פרונטאנד בלבד או פול‑סטאק כולל צד שרת. כל תבנית כוללת תיאור, טכנולוגיות ומחיר.
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export default function TemplatesPage() {
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="font-semibold truncate">{t.title}</h3>
                   <Badge variant="secondary">
-                    {t.category === "frontend" ? "פרונט" : "פול-סטאק"}
+                    {t.category === "frontend" ? "פרונטאנד" : "פול‑סטאק"}
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
@@ -68,7 +68,7 @@ export default function TemplatesPage() {
                   <div className="text-xs text-muted-foreground truncate max-w-[70%]">
                     {t.stack.join(" · ")}
                   </div>
-                  <div className="font-medium">${""}{t.priceUSD}</div>
+                  <div className="font-medium">${t.priceUSD}</div>
                 </div>
               </div>
             </Card>

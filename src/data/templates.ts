@@ -18,15 +18,15 @@ export const templates: Template[] = [
   {
     slug: "landing-react-tailwind",
     title: "Landing React + Tailwind",
-    shortDescription: "דף נחיתה מהיר וקליל עם Tailwind ו-Next.js",
+    shortDescription: "תבנית לדף נחיתה ב‑Next.js ו‑Tailwind — מהירה ונגישה.",
     description:
-      "תבנית נקייה לדף נחיתה עם רכיבי UI, SEO בסיסי ואנימציות קטנות. מושלם לקמפיינים והכרזות.",
+      "תבנית מודרנית לדף נחיתה עם רכיבי UI, SEO מובנה ופריסת סקשנים (Hero, Features, CTA). אידאלית למוצרים, שירותים או קמפיינים.",
     category: "frontend",
     features: [
       "Next.js App Router",
-      "Tailwind v4 + dark mode",
-      "SEO בסיסי + sitemap",
-      "קומפוננטות מוכנות (Hero, Features, CTA)",
+      "Tailwind v4 + מצב כהה",
+      "SEO וסייטמאפ מובנים",
+      "רכיבי דף נפוצים (Hero, Features, CTA)",
     ],
     stack: ["Next.js", "React", "TailwindCSS", "Vercel"],
     priceUSD: 29,
@@ -36,15 +36,15 @@ export const templates: Template[] = [
   {
     slug: "saas-starter-next-firebase",
     title: "SaaS Starter: Next + Firebase",
-    shortDescription: "סטארטר פול-סטאק עם לוגין, DB, תמחור ותשלומים",
+    shortDescription: "סטארטר מלא ל‑SaaS עם אימות, מסד נתונים וגביית תשלומים.",
     description:
-      "סטארטר מלא ל-SaaS כולל אימות Firebase, Firestore, שמירת פרופיל משתמש ותמחור עם Checkout (Stripe – בהגדרות).",
+      "סטארטר שלם ל‑SaaS עם Firebase, Firestore ו‑API Routes ב‑Next. כולל אינטגרציית Checkout (Stripe) והגדרות חיוב למשתמשים.",
     category: "fullstack",
     features: [
-      "Auth Firebase (Email/Google)",
-      "Firestore + כללי אבטחה בסיסיים",
-      "API Routes ב-Next",
-      "מבנה תמחור + דפי Billing",
+      "אימות Firebase (Email/Google)",
+      "Firestore + מודל נתונים בסיסי",
+      "API Routes של Next",
+      "ניהול משתמשים וחיוב (Billing)",
     ],
     stack: ["Next.js", "React", "Firebase", "Vercel", "Stripe"],
     priceUSD: 99,
