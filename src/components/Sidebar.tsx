@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, FolderOpen, Layers, FileText, MessagesSquare, Mail, Boxes } from "lucide-react";
+import { Home, FolderOpen, Layers, Map, FileText, MessagesSquare, Mail, Boxes } from "lucide-react";
 
 const links = [
   { href: "/", label: "עמוד הבית", icon: Home },
+  { href: "/roadmap", label: "מפת דרכים", icon: Map },
   { href: "/projects", label: "פרויקטים", icon: FolderOpen },
   { href: "/skills", label: "כישורים", icon: Layers },
   { href: "/templates", label: "תבניות", icon: Boxes },

@@ -13,6 +13,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 const links = [
   { href: "/", label: "בית" },
+  { href: "/roadmap", label: "מפת דרכים" },
   { href: "/projects", label: "פרויקטים" },
   { href: "/skills", label: "כישורים" },
 ];
