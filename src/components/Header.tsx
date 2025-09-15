@@ -14,6 +14,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 const links = [
   { href: "/", label: "בית" },
   { href: "/projects", label: "פרויקטים" },
+  { href: "/skills", label: "כישורים" },
 ];
 
 export default function Header() {
