@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { Accordion, AccordionItem, AccordionContent } from "@/components/ui/accordion";
 import { roadmapData } from "@/data/roadmap";
 import React from "react";
 
@@ -58,21 +58,23 @@ export default function SemiAnnualTimeline() {
               <Accordion type="single" collapsible>
                 {item.tasks.map((task, i) => (
                   <AccordionItem value={`task-${i}`} key={i} className="border-0 bg-transparent">
-                    <Card
-                      className="p-0 flex flex-col items-center border border-border rounded-xl shadow-lg bg-muted w-full text-foreground"
-                      style={{ marginRight: 0, minWidth: 0 }}
-                    >
-                      <AccordionTrigger className="w-full px-4 py-4 font-bold text-lg text-center tracking-tight bg-transparent hover:bg-muted/80 rounded-xl">
-                        {task.title}
-                      </AccordionTrigger>
-                      <AccordionContent className="w-full px-4 pb-4">
-                        {task.details ? (
-                          <div className="text-sm text-muted-foreground text-center leading-relaxed">
-                            {task.details}
-                          </div>
-                        ) : null}
-                      </AccordionContent>
-                    </Card>
+                    <AccordionCardTrigger>
+                      <Card
+                        className="p-0 flex flex-col items-center border border-border rounded-xl shadow-lg bg-muted w-full text-foreground cursor-pointer hover:bg-muted/80 transition"
+                        style={{ marginRight: 0, minWidth: 0 }}
+                      >
+                        <div className="w-full px-4 py-4 font-bold text-lg text-center tracking-tight bg-transparent">
+                          {task.title}
+                        </div>
+                      </Card>
+                    </AccordionCardTrigger>
+                    <AccordionContent className="w-full px-4 pb-4">
+                      {task.details ? (
+                        <div className="text-sm text-muted-foreground text-center leading-relaxed">
+                          {task.details}
+                        </div>
+                      ) : null}
+                    </AccordionContent>
                     {i < item.tasks.length - 1 && (
                       <hr className="w-2/3 border-blue-300 my-3 opacity-60 mx-auto" />
                     )}
@@ -86,6 +88,16 @@ export default function SemiAnnualTimeline() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Trigger component that makes the whole card clickable for Accordion
+function AccordionCardTrigger({ children }: { children: React.ReactNode }) {
+  // @ts-ignore - Radix Accordion expects a button, but we want div for full area
+  return (
+    <div role="button" tabIndex={0} className="w-full outline-none" data-accordion-trigger="true">
+      {children}
     </div>
   );
 }
