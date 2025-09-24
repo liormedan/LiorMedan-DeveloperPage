@@ -2,6 +2,12 @@ export type Project = { title: string; description: string; href: string; image?
 
 export const projects: Project[] = [
   {
+    title: "שירי מדן - אתר פורטפוליו",
+    description: "אתר פרסונלי לבמאית שירי מדן המציג עבודות ופרויקטים נבחרים.",
+    href: "https://shirimedan25.vercel.app/",
+    tags: ["Portfolio", "Next.js", "Vercel"],
+  },
+  {
     title: "MOODS",
     description: "Next.js + Supabase + Tailwind (RTL)",
     href: "https://example.com/moods",
