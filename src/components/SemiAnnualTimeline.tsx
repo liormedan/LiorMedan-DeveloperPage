@@ -21,49 +21,48 @@ export default function SemiAnnualTimeline() {
 
   return (
     <div style={{ direction: "rtl", textAlign: "right" }}>
-      <div className="flex flex-col items-center w-full px-2 md:px-0">
-  <div className="w-full max-w-3xl rounded-3xl shadow-xl bg-background border border-border p-6 md:p-10 flex flex-col items-center">
-          <div className="flex flex-row items-center gap-2 mb-6 mt-2 select-none">
+      <div className="flex flex-col items-center w-full px-1 md:px-0">
+        <div className="w-full max-w-md rounded-2xl shadow bg-background border border-border p-2 md:p-4 flex flex-col items-center">
+          <div className="flex flex-row items-center gap-2 mb-4 mt-1 select-none">
             {roadmapData.map((_, idx) => (
               <button
                 key={idx}
                 aria-label={`עבור לחודש ${idx + 1}`}
-                className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-4 flex items-center justify-center transition-all duration-200 mx-1
-                  bg-background border-border shadow-md
-                  ${current === idx ? 'scale-110 ring-2 ring-primary' : 'opacity-80'}
+                className={`w-14 h-14 md:w-16 md:h-16 rounded-full border-2 flex items-center justify-center transition-all duration-200 mx-0.5
+                  bg-background border-border shadow
+                  ${current === idx ? 'scale-105 ring-2 ring-primary' : 'opacity-80'}
                 `}
                 onClick={() => goTo(idx)}
                 style={{ outline: 'none' }}
               >
                 <span className={`text-center w-full font-bold select-none
-                  text-foreground ${current === idx ? 'text-xl md:text-2xl' : 'text-lg md:text-xl'}
+                  text-foreground ${current === idx ? 'text-base md:text-lg' : 'text-sm md:text-base'}
                 `}>
                   חודש {idx + 1}
                 </span>
               </button>
             ))}
-            {/* חיצים הוסרו לפי בקשת המשתמש */}
           </div>
-          <div className="mb-2 text-blue-200 text-sm font-semibold">
+          <div className="mb-1 text-blue-200 text-xs font-semibold">
             חודש {current + 1} מתוך {monthsCount}
           </div>
-          <div className={`w-full max-w-2xl transition-opacity duration-200 ${fade ? 'opacity-0' : 'opacity-100'}`} key={current}>
-            <div className="w-full flex flex-col items-center justify-center mb-2">
-              <span className="font-bold text-2xl text-white text-center tracking-wide" style={{letterSpacing: '0.5px'}}>{item.title}</span>
+          <div className={`w-full max-w-sm transition-opacity duration-200 ${fade ? 'opacity-0' : 'opacity-100'}`} key={current}>
+            <div className="w-full flex flex-col items-center justify-center mb-1">
+              <span className="font-bold text-lg text-white text-center tracking-wide" style={{letterSpacing: '0.5px'}}>{item.title}</span>
             </div>
-            <div className="!p-0 !bg-transparent !text-white !text-xl !font-bold flex items-center gap-2 justify-center text-center min-h-[48px]">
+            <div className="!p-0 !bg-transparent !text-white !text-base !font-bold flex items-center gap-1 justify-center text-center min-h-[32px]">
               <span className="w-full block text-center">{item.project}</span>
             </div>
-            <div className="flex flex-col gap-4 mt-4 w-full">
+            <div className="flex flex-col gap-2 mt-2 w-full max-h-[55vh] overflow-y-auto pr-1">
               <Accordion type="single" collapsible>
                 {item.tasks.map((task, i) => (
                   <AccordionItem value={`task-${i}`} key={i} className="border-0 bg-transparent">
                     <AccordionCardTrigger>
                       <Card
-                        className="p-0 flex flex-col items-center border border-border rounded-xl shadow-lg bg-muted w-full text-foreground cursor-pointer hover:bg-muted/80 transition"
+                        className="p-2 flex flex-col items-center border border-border rounded-lg shadow bg-muted w-full text-foreground cursor-pointer hover:bg-muted/80 transition"
                         style={{ marginRight: 0, minWidth: 0 }}
                       >
-                        <div className="w-full px-4 py-4 font-bold text-lg text-center tracking-tight bg-transparent">
+                        <div className="w-full px-2 py-2 font-bold text-base text-center tracking-tight bg-transparent">
                           {task.title}
                         </div>
                       </Card>
