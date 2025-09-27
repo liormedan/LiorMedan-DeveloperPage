@@ -91,6 +91,10 @@ type StrapiSinglePostResponse = {
   data?: PostEntry[];
 };
 
+type BlogPostPageProps = {
+  params: Promise<{ slug: string }>;
+};
+
 async function getPost(slug: string) {
   const query =
     `/posts?filters[slug][$eq]=${slug}` +
@@ -106,8 +110,9 @@ async function getPost(slug: string) {
   return data?.[0] ?? null;
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const post = await getPost(params.slug);
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
 
   if (!post) {
     return {};
@@ -130,8 +135,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = await getPost(slug);
 
   if (!post) {
     notFound();

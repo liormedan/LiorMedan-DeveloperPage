@@ -2,7 +2,7 @@
 import * as React from "react";
 import { roadmapData } from "@/data/roadmap";
 import PageTransition from "@/components/PageTransition";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, type Variants } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Circle, Calendar, Target, Zap, Code, Palette, Rocket, Database, Settings, Bot, ChevronLeft, ChevronRight } from "lucide-react";
@@ -257,12 +257,12 @@ function RoadmapItem({ monthData, index }: { monthData: typeof roadmapData[0], i
       x: 0,
       transition: { duration: 0.6, ease: "easeOut" },
     },
-  };
+  } satisfies Variants;
 
   const taskVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  };
+  } satisfies Variants;
 
   return (
     <motion.div
@@ -481,7 +481,7 @@ export default function RoadmapPage() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ duration: 0.5, ease: "easeInOut" as const }}
           >
             <SingleMonthView monthData={roadmapData[currentMonth]} index={currentMonth} />
           </motion.div>
