@@ -5,144 +5,9 @@ import PageTransition from "@/components/PageTransition";
 import { motion, useInView, type Variants } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, Calendar, Target, Zap, Code, Palette, Rocket, Database, Settings, Bot, ChevronLeft, ChevronRight } from "lucide-react";
+import { CheckCircle, Circle, Calendar, Target, Code, Palette, Rocket, Database, Settings, Bot, ChevronLeft, ChevronRight } from "lucide-react";
 
-// Visual elements for each month
-const getMonthVisual = (monthIndex: number, isInView: boolean) => {
-  const visuals = [
-    // חודש 1 - יסודות
-    <motion.div 
-      key="month1"
-      className="flex flex-col items-center justify-center h-64 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border-2 border-dashed border-blue-200 dark:border-blue-800 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      whileHover={{ y: -5 }}
-    >
-      <motion.div 
-        className="text-6xl mb-4"
-        whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.5 } }}
-      >
-        🏗️
-      </motion.div>
-      <div className="text-center">
-        <div className="font-bold text-blue-700 dark:text-blue-300">בניית יסודות</div>
-        <div className="text-sm text-blue-600 dark:text-blue-400">Next.js + TypeScript</div>
-      </div>
-    </motion.div>,
-    
-    // חודש 2 - תוכן
-    <motion.div 
-      key="month2"
-      className="flex flex-col items-center justify-center h-64 bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30 rounded-xl border-2 border-dashed border-purple-200 dark:border-purple-800 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      whileHover={{ y: -5 }}
-    >
-      <motion.div 
-        className="text-6xl mb-4"
-        whileHover={{ scale: [1, 1.2, 1], transition: { duration: 0.4 } }}
-      >
-        📝
-      </motion.div>
-      <div className="text-center">
-        <div className="font-bold text-purple-700 dark:text-purple-300">יצירת תוכן</div>
-        <div className="text-sm text-purple-600 dark:text-purple-400">בלוג + Case Studies</div>
-      </div>
-    </motion.div>,
-    
-    // חודש 3 - תלת ממד
-    <motion.div 
-      key="month3"
-      className="flex flex-col items-center justify-center h-64 bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-2 border-dashed border-green-200 dark:border-green-800 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
-      initial={{ scale: 0.8, opacity: 0, rotateY: -180 }}
-      animate={isInView ? { scale: 1, opacity: 1, rotateY: 0 } : { scale: 0.8, opacity: 0, rotateY: -180 }}
-      transition={{ duration: 1, delay: 0.3 }}
-      whileHover={{ y: -5, rotateY: 5 }}
-    >
-      <motion.div 
-        className="text-6xl mb-4"
-        whileHover={{ rotateZ: 360, transition: { duration: 0.6 } }}
-      >
-        🎮
-      </motion.div>
-      <div className="text-center">
-        <div className="font-bold text-green-700 dark:text-green-300">עולם תלת-ממדי</div>
-        <div className="text-sm text-green-600 dark:text-green-400">Three.js + Spline</div>
-      </div>
-    </motion.div>,
-    
-    // חודש 4 - שרת
-    <motion.div 
-      key="month4"
-      className="flex flex-col items-center justify-center h-64 bg-gradient-to-br from-orange-50 to-red-100 dark:from-orange-950/30 dark:to-red-950/30 rounded-xl border-2 border-dashed border-orange-200 dark:border-orange-800 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      whileHover={{ y: -5 }}
-    >
-      <motion.div 
-        className="text-6xl mb-4"
-        whileHover={{ x: [0, -5, 5, 0], transition: { duration: 0.5 } }}
-      >
-        🔗
-      </motion.div>
-      <div className="text-center">
-        <div className="font-bold text-orange-700 dark:text-orange-300">חיבור לשרת</div>
-        <div className="text-sm text-orange-600 dark:text-orange-400">Firebase + API</div>
-      </div>
-    </motion.div>,
-    
-    // חודש 5 - ביצועים
-    <motion.div 
-      key="month5"
-      className="flex flex-col items-center justify-center h-64 bg-gradient-to-br from-teal-50 to-cyan-100 dark:from-teal-950/30 dark:to-cyan-950/30 rounded-xl border-2 border-dashed border-teal-200 dark:border-teal-800 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-      whileHover={{ y: -5 }}
-    >
-      <motion.div 
-        className="text-6xl mb-4"
-        whileHover={{ scale: [1, 1.3, 1], rotate: [0, 180, 360], transition: { duration: 0.6 } }}
-      >
-        ⚡
-      </motion.div>
-      <div className="text-center">
-        <div className="font-bold text-teal-700 dark:text-teal-300">אופטימיזציה</div>
-        <div className="text-sm text-teal-600 dark:text-teal-400">ביצועים + SEO</div>
-      </div>
-    </motion.div>,
-    
-    // חודש 6 - AI
-    <motion.div 
-      key="month6"
-      className="flex flex-col items-center justify-center h-64 bg-gradient-to-br from-violet-50 to-fuchsia-100 dark:from-violet-950/30 dark:to-fuchsia-950/30 rounded-xl border-2 border-dashed border-violet-200 dark:border-violet-800 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105"
-      initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-      animate={isInView ? { scale: 1, opacity: 1, rotate: 0 } : { scale: 0.8, opacity: 0, rotate: -10 }}
-      transition={{ duration: 1, delay: 0.3 }}
-      whileHover={{ y: -5, rotate: 5 }}
-    >
-      <motion.div 
-        className="text-6xl mb-4"
-        whileHover={{ 
-          scale: [1, 1.1, 1], 
-          rotate: [0, -10, 10, 0],
-          transition: { duration: 0.8, repeat: Infinity, repeatType: "reverse" }
-        }}
-      >
-        🤖
-      </motion.div>
-      <div className="text-center">
-        <div className="font-bold text-violet-700 dark:text-violet-300">בינה מלאכותית</div>
-        <div className="text-sm text-violet-600 dark:text-violet-400">AI Chatbot</div>
-      </div>
-    </motion.div>
-  ];
-  
-  return visuals[monthIndex] || null;
-};
+
 
 // Component for single month view
 function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0], index: number }) {
@@ -154,18 +19,13 @@ function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0
   return (
     <motion.div
       ref={sectionRef}
-      className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-12"
+      className="flex justify-center items-center mb-12"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Visual element - always on right */}
-      <div className="w-full lg:w-1/2 flex justify-center">
-        {getMonthVisual(index, isInView)}
-      </div>
-
-      {/* Content card - always on left */}
-      <div className="w-full lg:w-1/2">
+      {/* Centered content card */}
+      <div className="w-full max-w-4xl">
         <Card className={`transition-all duration-300 hover:shadow-lg ${
           isCompleted ? 'border-green-200 bg-green-50/50 dark:bg-green-950/20' :
           isCurrent ? 'border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 shadow-md' :
@@ -243,133 +103,7 @@ function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0
   );
 }
 
-// Component for a single roadmap item (legacy - keeping for reference)
-function RoadmapItem({ monthData, index }: { monthData: typeof roadmapData[0], index: number }) {
-  const sectionRef = React.useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
-  const isCompleted = index < 2; // First 2 months are "completed" for demo
-  const isCurrent = index === 2; // Third month is "current"
 
-  const containerVariants = {
-    hidden: { opacity: 0, x: index % 2 === 0 ? -50 : 50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  } satisfies Variants;
-
-  const taskVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  } satisfies Variants;
-
-  return (
-    <motion.div
-      ref={sectionRef}
-      className={`relative flex items-center mb-16 ${index % 2 === 0 ? 'flex-row-reverse' : 'flex-row'}`}
-      variants={containerVariants}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-    >
-      {/* Timeline connector */}
-      <div className="absolute right-1/2 transform translate-x-1/2 w-px h-full bg-border -z-10" />
-      
-      {/* Timeline dot */}
-      <div className={`absolute right-1/2 transform translate-x-1/2 w-6 h-6 rounded-full border-4 z-10 ${
-        isCompleted ? 'bg-green-500 border-green-200' : 
-        isCurrent ? 'bg-blue-500 border-blue-200 animate-pulse' : 
-        'bg-muted border-border'
-      }`}>
-        {isCompleted && <CheckCircle className="w-4 h-4 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}
-        {isCurrent && <Zap className="w-3 h-3 text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />}
-      </div>
-
-      {/* Visual element */}
-      <div className={`w-5/12 ${index % 2 === 0 ? 'ml-8' : 'mr-8'}`}>
-        {getMonthVisual(index, isInView)}
-      </div>
-
-      {/* Content card */}
-      <div className={`w-5/12 ${index % 2 === 0 ? 'mr-8' : 'ml-8'}`}>
-        <Card className={`transition-all duration-300 hover:shadow-lg ${
-          isCompleted ? 'border-green-200 bg-green-50/50 dark:bg-green-950/20' :
-          isCurrent ? 'border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 shadow-md' :
-          'hover:border-primary/50'
-        }`}>
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-              <Badge variant={isCompleted ? "default" : isCurrent ? "secondary" : "outline"}>
-                חודש {monthData.month}
-              </Badge>
-              {isCompleted && <Badge variant="outline" className="text-green-600 border-green-200">הושלם</Badge>}
-              {isCurrent && <Badge variant="outline" className="text-blue-600 border-blue-200">נוכחי</Badge>}
-            </div>
-            <CardTitle className="text-lg leading-tight">{monthData.title}</CardTitle>
-            <CardDescription className="flex items-center gap-2">
-              <Target className="w-4 h-4" />
-              {monthData.project}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {monthData.tasks.map((task, taskIndex) => (
-                <motion.div
-                  key={taskIndex}
-                  variants={taskVariants}
-                  initial="hidden"
-                  animate={isInView ? "visible" : "hidden"}
-                  transition={{ delay: taskIndex * 0.1 }}
-                  className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${
-                    isCompleted ? 'bg-green-50 dark:bg-green-950/30' :
-                    isCurrent ? 'bg-blue-50 dark:bg-blue-950/30' :
-                    'bg-muted/50 hover:bg-muted'
-                  }`}
-                >
-                  <div className="mt-1">
-                    {isCompleted ? (
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                    ) : (
-                      <div className={`w-4 h-4 ${isCurrent ? 'text-blue-500' : 'text-muted-foreground'}`}>
-                        {/* Different icons based on task type */}
-                        {task.title.includes('Next.js') || task.title.includes('TypeScript') ? <Code className="w-4 h-4" /> :
-                         task.title.includes('עיצוב') || task.title.includes('Tailwind') ? <Palette className="w-4 h-4" /> :
-                         task.title.includes('Vercel') || task.title.includes('העלאה') ? <Rocket className="w-4 h-4" /> :
-                         task.title.includes('מסד נתונים') || task.title.includes('Firebase') ? <Database className="w-4 h-4" /> :
-                         task.title.includes('אופטימיזציה') || task.title.includes('ביצועים') ? <Settings className="w-4 h-4" /> :
-                         task.title.includes('AI') || task.title.includes('צ\'אטבוט') ? <Bot className="w-4 h-4" /> :
-                         <Circle className="w-4 h-4" />}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-sm leading-tight">{task.title}</h4>
-                      {isCompleted && (
-                        <Badge variant="outline" className="text-xs px-1.5 py-0.5 h-auto text-green-600 border-green-200">
-                          ✓
-                        </Badge>
-                      )}
-                      {isCurrent && taskIndex === 0 && (
-                        <Badge variant="outline" className="text-xs px-1.5 py-0.5 h-auto text-blue-600 border-blue-200 animate-pulse">
-                          בעבודה
-                        </Badge>
-                      )}
-                    </div>
-                    {task.details && (
-                      <p className="text-xs text-muted-foreground leading-relaxed">{task.details}</p>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </motion.div>
-  );
-}
 
 // Main page component
 export default function RoadmapPage() {
