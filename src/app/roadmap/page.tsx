@@ -102,7 +102,7 @@ function SingleMonthView({
 }: {
   monthData: (typeof roadmapByLocale.he)[number];
   index: number;
-  labels: typeof LABELS.he;
+  labels: typeof LABELS.he | typeof LABELS.en;
   direction: "rtl" | "ltr";
 }) {
   const sectionRef = React.useRef<HTMLDivElement>(null);
