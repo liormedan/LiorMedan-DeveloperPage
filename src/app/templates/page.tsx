@@ -74,7 +74,7 @@ export default function TemplatesPage() {
               {t.image ? (
                 <div
                   className="h-36 w-full bg-cover bg-center"
-                  style={{ backgroundImage: url() }}
+                  style={{ backgroundImage: `url(${t.image})` }}
                   aria-hidden
                 />
               ) : null}
