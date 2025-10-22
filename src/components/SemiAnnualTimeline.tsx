@@ -1,9 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { Accordion, AccordionItem, AccordionContent } from "@/components/ui/accordion";
-import { roadmapData } from "@/data/roadmap";
+import { roadmapByLocale } from "@/data/roadmap";
+import { useLanguage } from "@/lib/i18n/language-context";
 import React from "react";
 
 export default function SemiAnnualTimeline() {
+  const { locale } = useLanguage();
+  const roadmapData = roadmapByLocale[locale];
   const [current, setCurrent] = React.useState(0);
   const [fade, setFade] = React.useState(false);
   const item = roadmapData[current];
