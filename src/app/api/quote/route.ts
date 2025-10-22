@@ -1,16 +1,76 @@
-import { NextRequest } from "next/server";
+﻿import { NextRequest } from "next/server";
+import { DEFAULT_LOCALE, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n/config";
 
-type QuoteReq = { query: string };
+type QuoteReq = { query: string; locale?: string };
+
+type Copy = {
+  baseMvp: string[];
+  realtime: string;
+  payment: string;
+  ai: string;
+  three: string;
+  assumptions: string[];
+};
+
+const COPY: Record<Locale, Copy> = {
+  he: {
+    baseMvp: [
+      "אימות משתמשים עם Email/OAuth ותהליך הצטרפות מאובטח",
+      "דשבורד ניהול עם מדדים וחתך לפי תפקיד",
+      "טפסי איסוף נתונים עם ולידציה בצד הלקוח והשרת",
+      "ממשק RTL מלא עם עיצוב רספונסיבי",
+      "תהליך דיפלוי אוטומטי ל-Vercel עם מעקב אחרי שגיאות",
+    ],
+    realtime: "ערוץ תקשורת בזמן אמת (WebSocket) לעדכונים חיים",
+    payment: "חיבור Stripe לניהול חיובים והפקת חשבוניות",
+    ai: "חיבור API לשירות AI כולל שמירת מצבים ושמירה על פרטיות",
+    three: "סצנת Three.js אינטראקטיבית עם ביצועים מותאמים",
+    assumptions: [
+      "היקף MVP ממוקד ושאינו כולל פיתוח נייטיב",
+      "שיתוף פעולה הדוק עם בעל המוצר לקבלת החלטות בזמן",
+      "תהליך QA ותיקוף לפני כל דיפלוי משמעותי",
+    ],
+  },
+  en: {
+    baseMvp: [
+      "User auth with Email/OAuth and a secure onboarding flow",
+      "Operations dashboard with role-based metrics",
+      "Data collection forms with client/server validation",
+      "Fully responsive UI with RTL support",
+      "Automated Vercel deploy pipeline with error tracking",
+    ],
+    realtime: "Real-time channel (WebSocket) for live updates",
+    payment: "Stripe integration for billing and invoicing",
+    ai: "AI service integration with session persistence and privacy guards",
+    three: "Interactive Three.js scene with tuned performance",
+    assumptions: [
+      "MVP scope stays focused without native app work",
+      "Close collaboration with the product owner for fast decisions",
+      "QA and verification cycle before each major deploy",
+    ],
+  },
+};
+
+function resolveLocale(input?: string): Locale {
+  if (!input) return DEFAULT_LOCALE;
+  const normalized = input.toLowerCase();
+  const match = SUPPORTED_LOCALES.find((loc) => loc === normalized);
+  return match ?? DEFAULT_LOCALE;
+}
 
 export async function POST(req: NextRequest) {
   const body = (await req.json().catch(() => ({}))) as Partial<QuoteReq>;
+  const locale = resolveLocale(body.locale);
+  const copy = COPY[locale];
   const q = (body.query || "").toString().slice(0, 2000);
 
-  // Basic heuristic estimator (stub for a future LLM call)
   let base = 2500; // USD
   let weeks = 2;
 
-  const add = (amt: number, w: number) => { base += amt; weeks += w; };
+  const add = (amt: number, w: number) => {
+    base += amt;
+    weeks += w;
+  };
   const has = (s: string) => q.toLowerCase().includes(s);
 
   if (has("mobile") || has("android") || has("ios")) add(3000, 4);
@@ -25,18 +85,12 @@ export async function POST(req: NextRequest) {
   const min = Math.round(base * 0.9);
   const max = Math.round(base * 1.2);
 
-  const mvp: string[] = [
-    "Auth בסיסי (Email/OAuth) + ניהול פרופיל",
-    "מסד נתונים סכמטי ראשוני + דגמי נתונים",
-    "עמוד/ים מרכזיים לזרימת הערך הראשית",
-    "UI נקי ב‑RTL + מובייל רספונסיבי",
-    "תיעוד קצר להטמעה/הרחבה והעלאה ל‑Vercel",
-  ];
+  const mvp = [...copy.baseMvp];
 
-  if (has("realtime")) mvp.push("ערוץ רילטיים (WS) לאירועים מרכזיים");
-  if (has("payment")) mvp.push("חיבור Stripe לתשלום בסיסי");
-  if (has("ai")) mvp.push("API לוגיקה עם מודל AI (plug) + Prompt guards");
-  if (has("three") || has("webgl")) mvp.push("וויזואליזציה תלת ממדית בסיסית עם Three.js");
+  if (has("realtime")) mvp.push(copy.realtime);
+  if (has("payment")) mvp.push(copy.payment);
+  if (has("ai")) mvp.push(copy.ai);
+  if (has("three") || has("webgl")) mvp.push(copy.three);
 
   return Response.json({
     ok: true,
@@ -45,11 +99,7 @@ export async function POST(req: NextRequest) {
       timelineWeeks: Math.max(weeks, 2),
     },
     mvp,
-    assumptions: [
-      "הערכת מחיר גסה — כפופה לאיפיון קצר",
-      "פיצ'רים מתקדמים/אינטגרציות עשויים לשנות הטווח",
-      "תמחור כולל QA בסיסי והעלאה ל‑Vercel",
-    ],
+    assumptions: copy.assumptions,
+    locale,
   });
 }
-

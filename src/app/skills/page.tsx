@@ -1,10 +1,11 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { skills, SkillCategory } from "@/data/skills";
 import { Card } from "@/components/ui/card";
 import PageTransition from "@/components/PageTransition";
 import HeroThree from "@/components/HeroThree";
 import { ArrowUpRight } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 const categories: SkillCategory[] = [
   "Core",
@@ -15,19 +16,33 @@ const categories: SkillCategory[] = [
   "Tooling & DevOps",
 ];
 
+const COPY = {
+  he: {
+    heading: "Stack טכנולוגי",
+    subheading:
+      "אוסף הכלים שמלווה אותי בבניית אפליקציות מודרניות — מהבסיס ועד לתלת-ממד ול-DevOps.",
+  },
+  en: {
+    heading: "Tech stack & skills",
+    subheading:
+      "The toolkit I rely on to build modern products — from core web fundamentals to 3D and DevOps.",
+  },
+} as const;
+
 export default function SkillsPage() {
+  const { locale, direction } = useLanguage();
+  const labels = COPY[locale];
+
   return (
     <PageTransition>
-      <div className="relative">
+      <div className="relative" dir={direction}>
         <div className="absolute inset-0 opacity-50">
           <HeroThree backgroundOnly autoRotate />
         </div>
-        <div className="relative container-fluid py-8" dir="rtl">
+        <div className="relative container-fluid py-8">
           <div className="mb-8 space-y-2 text-center">
-            <h1 className="text-3xl font-bold tracking-tight">My Tech Stack & Skills</h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              I'm passionate about building modern, high-performance web applications. Here are some of the technologies and tools I work with.
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight capitalize">{labels.heading}</h1>
+            <p className="text-muted-foreground max-w-2xl mx-auto">{labels.subheading}</p>
           </div>
 
           <div className="space-y-8">

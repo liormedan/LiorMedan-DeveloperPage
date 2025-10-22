@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PaletteProvider } from "@/components/PaletteProvider";
 import PageTransition from "@/components/PageTransition";
+import { LanguageProvider } from "@/lib/i18n/language-context";
 
 const rubik = Rubik({ subsets: ["hebrew", "latin"], variable: "--font-hebrew" });
 
@@ -22,19 +23,21 @@ export default function RootLayout({
   return (
     <html lang="he" suppressHydrationWarning className="dark">
       <body className={`${rubik.variable} antialiased`}>
-        <ThemeProvider>
-          <PaletteProvider>
-            {/* Layout with sidebar on the right (RTL). Add right padding for desktop. */}
-            <Sidebar />
-            {/* Use margin-right to avoid creating an empty padded strip; sidebar overlays that area. */}
-            <div className="min-h-dvh lg:mr-14 flex flex-col">
-              <main className="flex-1">
-                <PageTransition>{children}</PageTransition>
-              </main>
-              <Footer />
-            </div>
-          </PaletteProvider>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <PaletteProvider>
+              {/* Layout with sidebar on the right (RTL). Add right padding for desktop. */}
+              <Sidebar />
+              {/* Use margin-right to avoid creating an empty padded strip; sidebar overlays that area. */}
+              <div className="min-h-dvh lg:mr-14 flex flex-col">
+                <main className="flex-1">
+                  <PageTransition>{children}</PageTransition>
+                </main>
+                <Footer />
+              </div>
+            </PaletteProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,30 +1,83 @@
-"use client";
+﻿"use client";
+
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Home, FolderOpen, Layers, Map, FileText, MessagesSquare, Mail, Boxes } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/language-context";
 
-const links = [
-  { href: "/", label: "עמוד הבית", icon: Home },
-  { href: "/roadmap", label: "מפת דרכים", icon: Map },
-  { href: "/projects", label: "פרויקטים", icon: FolderOpen },
-  { href: "/skills", label: "כישורים", icon: Layers },
-  { href: "/templates", label: "תבניות", icon: Boxes },
-  { href: "/quote", label: "הצעת מחיר", icon: MessagesSquare },
-  { href: "/principles", label: "עקרונות", icon: FileText },
-  { href: "/contact", label: "צור קשר", icon: Mail },
-] as const;
+type NavKey =
+  | "home"
+  | "roadmap"
+  | "projects"
+  | "skills"
+  | "templates"
+  | "quote"
+  | "principles"
+  | "contact";
+
+type BaseLink = {
+  href: string;
+  key: NavKey;
+  icon: typeof Home;
+};
+
+const NAV_LINKS: BaseLink[] = [
+  { href: "/", key: "home", icon: Home },
+  { href: "/roadmap", key: "roadmap", icon: Map },
+  { href: "/projects", key: "projects", icon: FolderOpen },
+  { href: "/skills", key: "skills", icon: Layers },
+  { href: "/templates", key: "templates", icon: Boxes },
+  { href: "/quote", key: "quote", icon: MessagesSquare },
+  { href: "/principles", key: "principles", icon: FileText },
+  { href: "/contact", key: "contact", icon: Mail },
+];
+
+const NAV_LABELS: Record<NavKey, { he: string; en: string }> = {
+  home: { he: "עמוד הבית", en: "Home" },
+  roadmap: { he: "מפת דרכים", en: "Roadmap" },
+  projects: { he: "פרויקטים", en: "Projects" },
+  skills: { he: "כישורים", en: "Skills" },
+  templates: { he: "תבניות", en: "Templates" },
+  quote: { he: "הצעת מחיר", en: "Request Quote" },
+  principles: { he: "עקרונות", en: "Principles" },
+  contact: { he: "צור קשר", en: "Contact" },
+};
+
+const META_TEXT = {
+  he: {
+    brandLabel: "עמוד הבית",
+    menu: "תפריט",
+  },
+  en: {
+    brandLabel: "Home",
+    menu: "Menu",
+  },
+} as const;
+
+type LocalizedLink = BaseLink & { label: string };
 
 type NavMode = "compact" | "expanded" | "responsive";
 
-function NavList({ onNavigate, mode = "responsive" }: { onNavigate?: () => void; mode?: NavMode }) {
+function NavList({
+  links,
+  direction,
+  onNavigate,
+  mode = "responsive",
+}: {
+  links: LocalizedLink[];
+  direction: "rtl" | "ltr";
+  onNavigate?: () => void;
+  mode?: NavMode;
+}) {
   const pathname = usePathname();
   return (
-    <nav className="mt-4 space-y-1">
+    <nav className="mt-4 space-y-1" dir={direction}>
       {links.map(({ href, label, icon: Icon }) => {
         const active = pathname === href;
         return (
@@ -80,18 +133,33 @@ function NavList({ onNavigate, mode = "responsive" }: { onNavigate?: () => void;
 }
 
 export default function Sidebar() {
+  const { locale, direction } = useLanguage();
+  const labels = META_TEXT[locale];
+
+  const localizedLinks = React.useMemo<LocalizedLink[]>(
+    () =>
+      NAV_LINKS.map((link) => ({
+        ...link,
+        label: NAV_LABELS[link.key][locale],
+      })),
+    [locale],
+  );
+
   return (
     <>
       <aside className="hidden lg:flex fixed top-0 bottom-0 right-0 z-40 w-14 flex-col items-stretch border-l bg-background/90 backdrop-blur">
         <div className="flex items-center justify-center h-14 w-full border-b">
-          <Link href="/" className="font-semibold text-sm" title="עמוד הבית" aria-label="עמוד הבית">LM</Link>
+          <Link href="/" className="font-semibold text-sm" title={labels.brandLabel} aria-label={labels.brandLabel}>
+            LM
+          </Link>
         </div>
         <div className="flex-1 py-2 w-full">
-          <NavList mode="compact" />
+          <NavList mode="compact" links={localizedLinks} direction={direction} />
         </div>
         <div className="mt-auto w-full p-2">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center gap-1">
             <ThemeToggle />
+            <LanguageToggle />
           </div>
           <Separator className="my-2" />
           <div className="text-center">
@@ -103,20 +171,24 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 right-4 z-50">
         <Sheet>
           <SheetTrigger asChild>
-            <Button size="sm" variant="secondary">תפריט</Button>
+            <Button size="sm" variant="secondary">
+              {labels.menu}
+            </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-72">
+          <SheetContent side={direction === "rtl" ? "right" : "left"} className="w-72" dir={direction}>
             <div className="flex items-center justify-between mb-3">
               <Link href="/" className="font-semibold" onClick={() => {}}>
-                תפריט
+                {labels.menu}
               </Link>
-              <ThemeToggle />
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                <LanguageToggle />
+              </div>
             </div>
-            <NavList />
+            <NavList links={localizedLinks} onNavigate={() => {}} direction={direction} />
           </SheetContent>
         </Sheet>
       </div>
     </>
   );
 }
-

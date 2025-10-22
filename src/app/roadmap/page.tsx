@@ -1,18 +1,111 @@
-"use client";
+﻿"use client";
 import * as React from "react";
-import { roadmapData } from "@/data/roadmap";
+import { roadmapByLocale } from "@/data/roadmap";
 import PageTransition from "@/components/PageTransition";
-import { motion, useInView, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle, Calendar, Target, Code, Palette, Rocket, Database, Settings, Bot, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  CheckCircle,
+  Circle,
+  Calendar,
+  Target,
+  Code,
+  Palette,
+  Rocket,
+  Database,
+  Settings,
+  Bot,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { useLanguage } from "@/lib/i18n/language-context";
 
+const LABELS = {
+  he: {
+    monthLabel: "חודש",
+    completed: "בוצע",
+    current: "עכשיו",
+    headerTitle: "מפת דרכים לחצי השנה הקרובה",
+    headerSubtitle:
+      "מסע של שישה חודשים שמציג את התכנון, ההטמעה והמסירה — כך נראה תהליך בנייה מקצועי ומדויק.",
+    instructions: "אפשר לנווט בחצים במקלדת או בלחיצה על הנקודות.",
+    prev: "הקודם",
+    next: "הבא",
+  },
+  en: {
+    monthLabel: "Month",
+    completed: "Done",
+    current: "Now",
+    headerTitle: "Six-Month Roadmap",
+    headerSubtitle:
+      "A six-month journey covering strategy, implementation, and delivery — the way I run professional builds.",
+    instructions: "Navigate with keyboard arrows or tap the progress dots.",
+    prev: "Previous",
+    next: "Next",
+  },
+} as const;
 
+type IconMatch = {
+  test: (text: string) => boolean;
+  icon: typeof Code;
+};
 
-// Component for single month view
-function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0], index: number }) {
+const ICON_MATCHERS: IconMatch[] = [
+  { test: (text) => /next\.js|typescript/i.test(text), icon: Code },
+  { test: (text) => /tailwind|design|ui/i.test(text), icon: Palette },
+  { test: (text) => /vercel|deploy|ci\/cd/i.test(text), icon: Rocket },
+  { test: (text) => /database|cms|supabase|firebase/i.test(text), icon: Database },
+  { test: (text) => /performance|optimization|code splitting|monitor/i.test(text), icon: Settings },
+  { test: (text) => /ai|assistant|llm|bot/i.test(text), icon: Bot },
+];
+
+function resolveIcon(title: string) {
+  const match = ICON_MATCHERS.find(({ test }) => test(title));
+  if (!match) return Circle;
+  return match.icon;
+}
+
+function useRoadmapNavigation(length: number) {
+  const [currentMonth, setCurrentMonth] = React.useState(0);
+
+  const nextMonth = React.useCallback(() => {
+    setCurrentMonth((prev) => (prev + 1) % length);
+  }, [length]);
+
+  const prevMonth = React.useCallback(() => {
+    setCurrentMonth((prev) => (prev - 1 + length) % length);
+  }, [length]);
+
+  React.useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === "ArrowRight") {
+        nextMonth();
+      }
+      if (event.key === "ArrowLeft") {
+        prevMonth();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [nextMonth, prevMonth]);
+
+  return { currentMonth, setCurrentMonth, nextMonth, prevMonth };
+}
+
+function SingleMonthView({
+  monthData,
+  index,
+  labels,
+  direction,
+}: {
+  monthData: (typeof roadmapByLocale.he)[number];
+  index: number;
+  labels: typeof LABELS.he;
+  direction: "rtl" | "ltr";
+}) {
   const sectionRef = React.useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: false, amount: 0.2 });
   const isCompleted = index < 2;
   const isCurrent = index === 2;
 
@@ -23,22 +116,26 @@ function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
+      dir={direction}
     >
-      {/* Centered content card */}
       <div className="w-full max-w-4xl">
-        <Card className={`transition-all duration-300 hover:shadow-lg ${
-          isCompleted ? 'border-green-200 bg-green-50/50 dark:bg-green-950/20' :
-          isCurrent ? 'border-blue-200 bg-blue-50/50 dark:bg-blue-950/20 shadow-md' :
-          'hover:border-primary/50'
-        }`}>
+        <Card className="transition-all duration-300 hover:shadow-lg">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <Badge variant={isCompleted ? "default" : isCurrent ? "secondary" : "outline"}>
-                חודש {monthData.month}
+                {labels.monthLabel} {monthData.month}
               </Badge>
-              {isCompleted && <Badge variant="outline" className="text-green-600 border-green-200">הושלם</Badge>}
-              {isCurrent && <Badge variant="outline" className="text-blue-600 border-blue-200">נוכחי</Badge>}
+              {isCompleted && (
+                <Badge variant="outline" className="text-green-600 border-green-200">
+                  {labels.completed}
+                </Badge>
+              )}
+              {isCurrent && (
+                <Badge variant="outline" className="text-blue-600 border-blue-200">
+                  {labels.current}
+                </Badge>
+              )}
             </div>
             <CardTitle className="text-xl leading-tight">{monthData.title}</CardTitle>
             <CardDescription className="flex items-center gap-2 text-base">
@@ -48,53 +145,28 @@ function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {monthData.tasks.map((task, taskIndex) => (
-                <motion.div
-                  key={taskIndex}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: taskIndex * 0.1, duration: 0.4 }}
-                  className={`flex items-start gap-3 p-4 rounded-lg transition-colors ${
-                    isCompleted ? 'bg-green-50 dark:bg-green-950/30' :
-                    isCurrent ? 'bg-blue-50 dark:bg-blue-950/30' :
-                    'bg-muted/50 hover:bg-muted'
-                  }`}
-                >
-                  <div className="mt-1">
-                    {isCompleted ? (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    ) : (
-                      <div className={`w-5 h-5 ${isCurrent ? 'text-blue-500' : 'text-muted-foreground'}`}>
-                        {task.title.includes('Next.js') || task.title.includes('TypeScript') ? <Code className="w-5 h-5" /> :
-                         task.title.includes('עיצוב') || task.title.includes('Tailwind') ? <Palette className="w-5 h-5" /> :
-                         task.title.includes('Vercel') || task.title.includes('העלאה') ? <Rocket className="w-5 h-5" /> :
-                         task.title.includes('מסד נתונים') || task.title.includes('Firebase') ? <Database className="w-5 h-5" /> :
-                         task.title.includes('אופטימיזציה') || task.title.includes('ביצועים') ? <Settings className="w-5 h-5" /> :
-                         task.title.includes('AI') || task.title.includes('צ\'אטבוט') ? <Bot className="w-5 h-5" /> :
-                         <Circle className="w-5 h-5" />}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
+              {monthData.tasks.map((task, taskIndex) => {
+                const Icon = isCompleted ? CheckCircle : resolveIcon(task.title);
+                return (
+                  <motion.div
+                    key={taskIndex}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: taskIndex * 0.1, duration: 0.4 }}
+                    className="flex items-start gap-3 p-4 rounded-lg transition-colors"
+                  >
+                    <div className="mt-1">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-base leading-tight">{task.title}</h4>
-                      {isCompleted && (
-                        <Badge variant="outline" className="text-xs px-1.5 py-0.5 h-auto text-green-600 border-green-200">
-                          ✓
-                        </Badge>
-                      )}
-                      {isCurrent && taskIndex === 0 && (
-                        <Badge variant="outline" className="text-xs px-1.5 py-0.5 h-auto text-blue-600 border-blue-200 animate-pulse">
-                          בעבודה
-                        </Badge>
+                      {task.details && (
+                        <p className="text-sm text-muted-foreground leading-relaxed mt-1">{task.details}</p>
                       )}
                     </div>
-                    {task.details && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">{task.details}</p>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -103,146 +175,108 @@ function SingleMonthView({ monthData, index }: { monthData: typeof roadmapData[0
   );
 }
 
-
-
-// Main page component
 export default function RoadmapPage() {
-  const [currentMonth, setCurrentMonth] = React.useState(0);
-  
-  const nextMonth = () => {
-    setCurrentMonth((prev) => (prev + 1) % roadmapData.length);
-  };
-  
-  const prevMonth = () => {
-    setCurrentMonth((prev) => (prev - 1 + roadmapData.length) % roadmapData.length);
-  };
-
-  // Keyboard navigation
-  React.useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        nextMonth();
-      } else if (e.key === 'ArrowRight') {
-        prevMonth();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
+  const { locale, direction } = useLanguage();
+  const labels = LABELS[locale];
+  const months = roadmapByLocale[locale];
+  const { currentMonth, setCurrentMonth, nextMonth, prevMonth } = useRoadmapNavigation(months.length);
 
   return (
     <PageTransition>
-      <div className="container-fluid py-8" dir="rtl">
+      <div className="container-fluid py-8" dir={direction}>
         <div className="mb-12 space-y-4 text-center">
-          <motion.h1 
+          <motion.h1
             className="text-4xl font-bold tracking-tight"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            מפת דרכים לפיתוח
+            {labels.headerTitle}
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="text-muted-foreground max-w-2xl mx-auto text-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            תוכנית הפיתוח שלי ל-6 החודשים הקרובים - מסע מרתק של למידה, יצירה וחדשנות
+            {labels.headerSubtitle}
           </motion.p>
         </div>
 
-        {/* Navigation and Progress indicator */}
-        <motion.div 
+        <motion.div
           className="flex justify-center items-center gap-4 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          {/* Previous button */}
           <motion.button
             onClick={prevMonth}
             className="p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            aria-label={labels.prev}
           >
-            <ChevronRight className="w-5 h-5" />
+            {direction === "rtl" ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
           </motion.button>
 
-          {/* Progress dots */}
           <div className="flex items-center gap-2 bg-muted/50 rounded-full px-6 py-3">
             <div className="flex gap-1">
-              {roadmapData.map((_, index) => (
+              {months.map((_, index) => (
                 <motion.div
                   key={index}
                   className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-300 ${
-                    index === currentMonth ? 'bg-blue-500 scale-125' :
-                    index < 2 ? 'bg-green-500' : 
-                    'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                    index === currentMonth ? "bg-primary" : "bg-muted-foreground/30"
                   }`}
                   onClick={() => setCurrentMonth(index)}
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
+                  aria-label={`${labels.monthLabel} ${index + 1}`}
                 />
               ))}
             </div>
           </div>
 
-          {/* Next button */}
           <motion.button
             onClick={nextMonth}
             className="p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            aria-label={labels.next}
           >
-            <ChevronLeft className="w-5 h-5" />
+            {direction === "rtl" ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
           </motion.button>
         </motion.div>
 
-        {/* Single month display */}
         <div className="relative max-w-7xl mx-auto">
-          {/* Background decorative elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-10 left-10 w-32 h-32 bg-blue-100 dark:bg-blue-900/20 rounded-full blur-3xl opacity-30" />
             <div className="absolute top-96 right-10 w-40 h-40 bg-purple-100 dark:bg-purple-900/20 rounded-full blur-3xl opacity-30" />
             <div className="absolute bottom-96 left-20 w-36 h-36 bg-green-100 dark:bg-green-900/20 rounded-full blur-3xl opacity-30" />
           </div>
-          
-          {/* Display current month */}
+
           <motion.div
-            key={currentMonth}
-            initial={{ opacity: 0, x: 100 }}
+            key={`${locale}-${currentMonth}`}
+            initial={{ opacity: 0, x: direction === "rtl" ? 100 : -100 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
+            exit={{ opacity: 0, x: direction === "rtl" ? -100 : 100 }}
             transition={{ duration: 0.5, ease: "easeInOut" as const }}
           >
-            <SingleMonthView monthData={roadmapData[currentMonth]} index={currentMonth} />
+            <SingleMonthView
+              monthData={months[currentMonth]}
+              index={currentMonth}
+              labels={labels}
+              direction={direction}
+            />
           </motion.div>
         </div>
 
-        {/* Navigation instructions */}
-        <motion.div 
+        <motion.div
           className="text-center mt-8 mb-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <p className="text-sm text-muted-foreground">
-            השתמש בחצים ← → או לחץ על הכפתורים לניווט בין החודשים
-          </p>
-        </motion.div>
-
-        {/* Footer */}
-        <motion.div 
-          className="text-center mt-8 pt-8 border-t"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1 }}
-        >
-          <p className="text-muted-foreground">
-            © 2025 ליאור מדן • נבנה עם ❤️ באמצעות Next.js, Tailwind CSS ו-shadcn/ui
-          </p>
+          <p className="text-sm text-muted-foreground">{labels.instructions}</p>
         </motion.div>
       </div>
     </PageTransition>

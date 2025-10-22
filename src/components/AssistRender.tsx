@@ -1,140 +1,306 @@
-"use client";
+﻿"use client";
 import * as React from "react";
 import type { AssistOutput } from "@/lib/assistSchema";
 import DiagramFlow from "@/components/DiagramFlow";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 type Props = { data: AssistOutput };
 
+type Copy = {
+  headings: {
+    scope: string;
+    architecture: string;
+    dataModel: string;
+    plan: string;
+    diagrams: string;
+    estimate: string;
+    questions: string;
+    risks: string;
+  };
+  scope: {
+    goals: string;
+    users: string;
+    useCases: string;
+    asA: string;
+    iWant: string;
+    soThat: string;
+  };
+  architecture: {
+    modules: string;
+    services: string;
+    integrations: string;
+  };
+  plan: {
+    weeksSuffix: string;
+    bulletPrefix: string;
+    ganttLabel: string;
+  };
+  estimate: {
+    price: string;
+    timeline: string;
+    assumptionsLabel: string;
+    separator: string;
+  };
+  weeksLabel: string;
+};
+
+const COPY: Record<"he" | "en", Copy> = {
+  he: {
+    headings: {
+      scope: "מסגרת עבודה",
+      architecture: "ארכיטקטורה",
+      dataModel: "מודל נתונים",
+      plan: "תכנית ביצוע",
+      diagrams: "דיאגרמות",
+      estimate: "הערכה",
+      questions: "שאלות הבהרה",
+      risks: "סיכונים",
+    },
+    scope: {
+      goals: "מטרות",
+      users: "משתמשים",
+      useCases: "Use Cases",
+      asA: "כ-",
+      iWant: "אני רוצה",
+      soThat: "כדי",
+    },
+    architecture: {
+      modules: "מודולים",
+      services: "שירותים",
+      integrations: "אינטגרציות",
+    },
+    plan: {
+      weeksSuffix: "שבועות",
+      bulletPrefix: "-",
+      ganttLabel: "ציר שבועות",
+    },
+    estimate: {
+      price: "טווח מחיר (USD)",
+      timeline: "משך מוערך",
+      assumptionsLabel: "הנחות",
+      separator: " - ",
+    },
+    weeksLabel: "שבועות",
+  },
+  en: {
+    headings: {
+      scope: "Scope",
+      architecture: "Architecture",
+      dataModel: "Data model",
+      plan: "Delivery plan",
+      diagrams: "Diagrams",
+      estimate: "Estimate",
+      questions: "Clarifying questions",
+      risks: "Risks",
+    },
+    scope: {
+      goals: "Goals",
+      users: "Users",
+      useCases: "Use cases",
+      asA: "As a",
+      iWant: "I want",
+      soThat: "so that",
+    },
+    architecture: {
+      modules: "Modules",
+      services: "Services",
+      integrations: "Integrations",
+    },
+    plan: {
+      weeksSuffix: "weeks",
+      bulletPrefix: "-",
+      ganttLabel: "Timeline (weeks)",
+    },
+    estimate: {
+      price: "Price range (USD)",
+      timeline: "Timeline",
+      assumptionsLabel: "Assumptions",
+      separator: " - ",
+    },
+    weeksLabel: "weeks",
+  },
+};
+
 export default function AssistRender({ data }: Props) {
-  const totalWeeks = data.estimate?.timeline_weeks || data.plan?.phases?.reduce((a, p) => a + (p?.weeks || 0), 0) || 8;
+  const { locale, direction } = useLanguage();
+  const copy = COPY[locale];
+  const totalWeeks =
+    data.estimate?.timeline_weeks || data.plan?.phases?.reduce((acc, phase) => acc + (phase?.weeks || 0), 0) || 8;
 
   return (
-    <div className="space-y-10">
-      {/* Scope */}
-      <section>
-        <h2 className="text-2xl font-bold mb-2">סקופ</h2>
+    <div className="space-y-10" dir={direction}>
+      <Section title={copy.headings.scope}>
         <div className="grid gap-4 sm:grid-cols-3">
-          <List title="יעדים" items={data.scope.goals} />
-          <List title="משתמשים" items={data.scope.users} />
-          <UseCases title="Use‑Cases" cases={data.scope.use_cases} />
+          <List title={copy.scope.goals} items={data.scope.goals} direction={direction} />
+          <List title={copy.scope.users} items={data.scope.users} direction={direction} />
+          <UseCases
+            title={copy.scope.useCases}
+            cases={data.scope.use_cases}
+            labels={{ asA: copy.scope.asA, iWant: copy.scope.iWant, soThat: copy.scope.soThat }}
+            direction={direction}
+          />
         </div>
-      </section>
+      </Section>
 
-      {/* Architecture */}
-      <section>
-        <h2 className="text-2xl font-bold mb-2">ארכיטקטורה</h2>
+      <Section title={copy.headings.architecture}>
         <div className="grid gap-4 sm:grid-cols-3">
-          <List title="מודולים" items={data.architecture.modules.map((m) => `${m.name}: ${m.responsibilities.join(", ")}`)} />
-          {data.architecture.services && <List title="שירותים" items={data.architecture.services.map((s) => `${s.name}${s.type ? ` (${s.type})` : ""}`)} />}
-          {data.architecture.integrations && <List title="אינטגרציות" items={data.architecture.integrations.map((i) => `${i.name}${i.purpose ? ` – ${i.purpose}` : ""}`)} />}
+          <List
+            title={copy.architecture.modules}
+            items={data.architecture.modules.map((m) => `${m.name}: ${m.responsibilities.join(", ")}`)}
+            direction={direction}
+          />
+          {data.architecture.services && (
+            <List
+              title={copy.architecture.services}
+              items={data.architecture.services.map((service) => `${service.name}${service.type ? ` (${service.type})` : ""}`)}
+              direction={direction}
+            />
+          )}
+          {data.architecture.integrations && (
+            <List
+              title={copy.architecture.integrations}
+              items={data.architecture.integrations.map((integration) => `${integration.name}${integration.purpose ? ` - ${integration.purpose}` : ""}`)}
+              direction={direction}
+            />
+          )}
         </div>
-      </section>
+      </Section>
 
-      {/* Data model */}
-      <section>
-        <h2 className="text-2xl font-bold mb-2">מודל נתונים</h2>
+      <Section title={copy.headings.dataModel}>
         <div className="grid gap-4 sm:grid-cols-3">
-          {data.data.entities.map((e) => (
-            <div key={e.name} className="border rounded-lg p-3">
-              <div className="font-semibold">{e.name}</div>
-              <ul className="mt-2 text-sm space-y-1">
-                {e.fields.map((f) => (
-                  <li key={f.name} className="text-muted-foreground">
-                    <span className="font-mono">{f.name}</span>: {f.type}{f.required ? " *" : ""}
+          {data.data.entities.map((entity) => (
+            <div key={entity.name} className="border rounded-lg p-3">
+              <div className="font-semibold">{entity.name}</div>
+              <ul className={`mt-2 text-sm space-y-1 ${direction === "rtl" ? "mr-2" : "ml-2"}`}>
+                {entity.fields.map((field) => (
+                  <li key={field.name} className="text-muted-foreground">
+                    <span className="font-mono">{field.name}</span>: {field.type}
+                    {field.required ? " *" : ""}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-      </section>
+      </Section>
 
-      {/* API */}
       {data.api && (
-        <section>
-          <h2 className="text-2xl font-bold mb-2">API</h2>
+        <Section title="API">
           <div className="space-y-2">
-            {data.api.endpoints.map((ep, i) => (
-              <div key={i} className="border rounded-lg p-3">
-                <div className="font-mono text-sm"><span className="font-bold">{ep.method}</span> {ep.path}</div>
-                {ep.summary && <div className="text-sm text-muted-foreground">{ep.summary}</div>}
+            {data.api.endpoints.map((endpoint, index) => (
+              <div key={index} className="border rounded-lg p-3">
+                <div className="font-mono text-sm">
+                  <span className="font-bold">{endpoint.method}</span> {endpoint.path}
+                </div>
+                {endpoint.summary && <div className="text-sm text-muted-foreground">{endpoint.summary}</div>}
               </div>
             ))}
           </div>
-        </section>
+        </Section>
       )}
 
-      {/* Plan + Gantt */}
-      <section>
-        <h2 className="text-2xl font-bold mb-2">תוכנית עבודה</h2>
+      <Section title={copy.headings.plan}>
         <div className="space-y-3">
-          {data.plan.phases.map((ph, i) => (
-            <div key={i} className="border rounded-lg p-3">
-              <div className="font-semibold">{ph.name} — {ph.weeks} שבועות</div>
+          {data.plan.phases.map((phase, index) => (
+            <div key={index} className="border rounded-lg p-3">
+              <div className="font-semibold">
+                {phase.name} - {phase.weeks} {copy.plan.weeksSuffix}
+              </div>
               <ul className="mt-2 text-sm grid gap-1 sm:grid-cols-2">
-                {ph.tasks.map((t, j) => (
-                  <li key={j}>• {t.title}{typeof t.points === "number" ? ` (${t.points}pt)` : ""}</li>
+                {phase.tasks.map((task, taskIndex) => (
+                  <li key={taskIndex}>
+                    {copy.plan.bulletPrefix} {task.title}
+                    {typeof task.points === "number" ? ` (${task.points}pt)` : ""}
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        {data.diagrams?.gantt && <Gantt tasks={data.diagrams.gantt.tasks} totalWeeks={totalWeeks} />}
-      </section>
+        {data.diagrams?.gantt && (
+          <Gantt tasks={data.diagrams.gantt.tasks} totalWeeks={totalWeeks} label={copy.plan.ganttLabel} direction={direction} />
+        )}
+      </Section>
 
-      {/* Diagrams */}
-      <section>
-        <h2 className="text-2xl font-bold mb-2">דיאגרמות</h2>
+      <Section title={copy.headings.diagrams}>
         {data.diagrams?.flow && (
           <div className="border rounded-lg p-3">
             <DiagramFlow
-              boxes={data.diagrams.flow.nodes.map((n) => ({ id: n.id, label: n.label }))}
+              boxes={data.diagrams.flow.nodes.map((node) => ({ id: node.id, label: node.label }))}
               edges={data.diagrams.flow.edges}
             />
           </div>
         )}
-        {/* ERD simplified rendering already above in data model */}
-      </section>
+      </Section>
 
-      {/* Estimate */}
-      <section>
-        <h2 className="text-2xl font-bold mb-2">הערכה</h2>
-        <div className="border rounded-lg p-4">
-          <div>טווח מחיר (USD): <strong>{data.estimate.price_range_usd.min.toLocaleString()}–{data.estimate.price_range_usd.max.toLocaleString()}</strong></div>
-          <div>זמן כולל: ~{data.estimate.timeline_weeks} שבועות</div>
-          <div className="text-sm text-muted-foreground mt-2">הנחות: {data.estimate.assumptions.join(" • ")}</div>
+      <Section title={copy.headings.estimate}>
+        <div className="border rounded-lg p-4 space-y-1">
+          <div>
+            {copy.estimate.price}: <strong>{data.estimate.price_range_usd.min.toLocaleString()}-{data.estimate.price_range_usd.max.toLocaleString()}</strong>
+          </div>
+          <div>
+            {copy.estimate.timeline}: ~{data.estimate.timeline_weeks} {copy.weeksLabel}
+          </div>
+          <div className="text-sm text-muted-foreground mt-2">
+            {copy.estimate.assumptionsLabel}: {data.estimate.assumptions.join(copy.estimate.separator)}
+          </div>
         </div>
-      </section>
+      </Section>
 
       {data.clarifying_questions && data.clarifying_questions.length > 0 && (
-        <section>
-          <h2 className="text-2xl font-bold mb-2">שאלות הבהרה</h2>
-          <List items={data.clarifying_questions} />
-        </section>
+        <Section title={copy.headings.questions}>
+          <List items={data.clarifying_questions} direction={direction} />
+        </Section>
       )}
 
       {data.risks && data.risks.length > 0 && (
-        <section>
-          <h2 className="text-2xl font-bold mb-2">סיכונים</h2>
-          <List items={data.risks} />
-        </section>
+        <Section title={copy.headings.risks}>
+          <List items={data.risks} direction={direction} />
+        </Section>
       )}
     </div>
   );
 }
 
-function List({ title, items }: { title?: string; items: string[] }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function List({ title, items, direction }: { title?: string; items: string[]; direction: "rtl" | "ltr" }) {
+  if (!items || items.length === 0) {
+    return null;
+  }
   return (
     <div>
       {title && <div className="font-semibold mb-1">{title}</div>}
-      <ul className="text-sm space-y-1 list-disc mr-5">
-        {items.map((x, i) => (<li key={i}>{x}</li>))}
+      <ul className={`text-sm space-y-1 list-disc ${direction === "rtl" ? "mr-5" : "ml-5"}`}>
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
       </ul>
     </div>
   );
 }
 
-function UseCases({ title, cases }: { title: string; cases: { title: string; as_a?: string; i_want?: string; so_that?: string }[] }) {
+function UseCases({
+  title,
+  cases,
+  labels,
+  direction,
+}: {
+  title: string;
+  cases: { title: string; as_a?: string; i_want?: string; so_that?: string }[];
+  labels: { asA: string; iWant: string; soThat: string };
+  direction: "rtl" | "ltr";
+}) {
+  if (!cases || cases.length === 0) {
+    return null;
+  }
   return (
     <div>
       <div className="font-semibold mb-1">{title}</div>
@@ -143,9 +309,9 @@ function UseCases({ title, cases }: { title: string; cases: { title: string; as_
           <li key={i} className="border rounded p-2">
             <div className="font-medium">{c.title}</div>
             <div className="text-muted-foreground">
-              {c.as_a && <span>כ־{c.as_a} • </span>}
-              {c.i_want && <span>רוצה {c.i_want} • </span>}
-              {c.so_that && <span>כדי {c.so_that}</span>}
+              {c.as_a && <span>{labels.asA} {c.as_a} </span>}
+              {c.i_want && <span>{labels.iWant} {c.i_want} </span>}
+              {c.so_that && <span>{labels.soThat} {c.so_that}</span>}
             </div>
           </li>
         ))}
@@ -154,29 +320,49 @@ function UseCases({ title, cases }: { title: string; cases: { title: string; as_
   );
 }
 
-function Gantt({ tasks, totalWeeks }: { tasks: { title: string; start_week: number; weeks: number }[]; totalWeeks: number }) {
-  const max = Math.max(totalWeeks, ...tasks.map((t) => t.start_week + t.weeks));
+function Gantt({
+  tasks,
+  totalWeeks,
+  label,
+  direction,
+}: {
+  tasks: { title: string; start_week: number; weeks: number }[];
+  totalWeeks: number;
+  label: string;
+  direction: "rtl" | "ltr";
+}) {
+  if (!tasks || tasks.length === 0) {
+    return null;
+  }
+  const max = Math.max(totalWeeks, ...tasks.map((task) => task.start_week + task.weeks));
   return (
     <div className="mt-4">
-      <div className="text-sm text-muted-foreground mb-1">לו"ז (שבועות)</div>
+      <div className="text-sm text-muted-foreground mb-1">{label}</div>
       <div className="border rounded-lg p-3">
-        <div className="relative">
-          {/* Axis */}
+        <div className="relative space-y-2">
           <div className="grid" style={{ gridTemplateColumns: `repeat(${max}, minmax(0, 1fr))` }}>
-            {Array.from({ length: max }, (_, i) => (
-              <div key={i} className="text-[10px] text-center text-muted-foreground">{i + 1}</div>
+            {Array.from({ length: max }, (_, index) => (
+              <div key={index} className="text-[10px] text-center text-muted-foreground">
+                {index + 1}
+              </div>
             ))}
           </div>
-          {/* Bars */}
-          <div className="mt-2 space-y-1">
-            {tasks.map((t, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm">
-                <div className="w-32 truncate" title={t.title}>{t.title}</div>
+          <div className="space-y-1">
+            {tasks.map((task, index) => (
+              <div key={index} className="flex items-center gap-2 text-sm">
+                <div className="w-32 truncate" title={task.title}>
+                  {task.title}
+                </div>
                 <div className="flex-1">
                   <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${max}, minmax(0, 1fr))` }}>
-                    {Array.from({ length: max }, (_, c) => {
-                      const active = c + 1 > t.start_week && c + 1 <= t.start_week + t.weeks;
-                      return <div key={c} className={active ? "bg-blue-500/70 h-2 rounded-sm" : "bg-border h-2 rounded-sm"} />;
+                    {Array.from({ length: max }, (_, column) => {
+                      const active = column + 1 > task.start_week && column + 1 <= task.start_week + task.weeks;
+                      return (
+                        <div
+                          key={column}
+                          className={active ? "bg-blue-500/70 h-2 rounded-sm" : "bg-border h-2 rounded-sm"}
+                        />
+                      );
                     })}
                   </div>
                 </div>
@@ -188,4 +374,3 @@ function Gantt({ tasks, totalWeeks }: { tasks: { title: string; start_week: numb
     </div>
   );
 }
-
