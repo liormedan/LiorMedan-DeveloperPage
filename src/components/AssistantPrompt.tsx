@@ -86,7 +86,7 @@ export default function AssistantPrompt() {
     setListening(true);
     rec.onresult = (event: any) => {
       const transcript = Array.from(event.results)
-        .map((result) => result[0].transcript)
+        .map((result: any) => result[0].transcript)
         .join(" ");
       setValue(transcript);
     };
