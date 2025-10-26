@@ -14,7 +14,7 @@ export const projectsByLocale: Record<Locale, Project[]> = {
       title: "Sanity Studio - תבנית אתר עברית",
       description:
         "סטודיו Sanity מותאם לעברית עם תבנית אתר מלאה. מערכת ניהול תוכן מתקדמת עם תמיכה מלאה ב-RTL ועיצוב מותאם לשוק הישראלי.",
-      href: "https://vercel.com/liormedans-projects/sanity-studio-heb-template-website-",
+      href: "https://sanity-studio-heb-template-website.vercel.app/",
       image: "/images/projects/placeholder-sanity.svg",
       tags: ["Sanity", "CMS", "Hebrew", "Template", "Production"],
     },
@@ -26,14 +26,7 @@ export const projectsByLocale: Record<Locale, Project[]> = {
       image: "/images/projects/placeholder-cms.svg",
       tags: ["Next.js", "CMS", "Landing Page", "Production"],
     },
-    {
-      title: "Blogi (Strapi CMS)",
-      description:
-        "פורטל בלוגים שנבנה עם Next.js ו-Strapi CMS עבור ניהול תוכן גמיש. הפרויקט מדגים חיבור API מאובטח וזרימות עריכה קלות למנהלי תוכן.",
-      href: "/blog",
-      image: "/images/projects/placeholder-moods.svg",
-      tags: ["Next.js", "Strapi", "CMS", "Demo"],
-    },
+
     {
       title: "אתר תדמית ללקוחה פרטית",
       description:
@@ -48,7 +41,7 @@ export const projectsByLocale: Record<Locale, Project[]> = {
       title: "Sanity Studio - Hebrew Website Template",
       description:
         "Sanity Studio customized for Hebrew with complete website template. Advanced content management system with full RTL support and design tailored for the Israeli market.",
-      href: "https://vercel.com/liormedans-projects/sanity-studio-heb-template-website-",
+      href: "https://sanity-studio-heb-template-website.vercel.app/",
       image: "/images/projects/placeholder-sanity.svg",
       tags: ["Sanity", "CMS", "Hebrew", "Template", "Production"],
     },
@@ -60,14 +53,7 @@ export const projectsByLocale: Record<Locale, Project[]> = {
       image: "/images/projects/placeholder-cms.svg",
       tags: ["Next.js", "CMS", "Landing Page", "Production"],
     },
-    {
-      title: "Blogi (Strapi CMS)",
-      description:
-        "A blogging portal built with Next.js and Strapi CMS for flexible content management. Demonstrates secure API integration and editor-friendly publishing flows.",
-      href: "/blog",
-      image: "/images/projects/placeholder-moods.svg",
-      tags: ["Next.js", "Strapi", "CMS", "Demo"],
-    },
+
     {
       title: "Personal Brand Website",
       description:
