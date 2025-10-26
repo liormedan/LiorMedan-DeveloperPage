@@ -11,6 +11,14 @@ export type Project = {
 export const projectsByLocale: Record<Locale, Project[]> = {
   he: [
     {
+      title: "Sanity Studio - תבנית אתר עברית",
+      description:
+        "סטודיו Sanity מותאם לעברית עם תבנית אתר מלאה. מערכת ניהול תוכן מתקדמת עם תמיכה מלאה ב-RTL ועיצוב מותאם לשוק הישראלי.",
+      href: "https://vercel.com/liormedans-projects/sanity-studio-heb-template-website-",
+      image: "/images/projects/placeholder-sanity.svg",
+      tags: ["Sanity", "CMS", "Hebrew", "Template", "Production"],
+    },
+    {
       title: "Lior Landing Page CMS",
       description:
         "דף נחיתה דינמי עם מערכת ניהול תוכן מתקדמת. הפרויקט מדגים יכולות CMS מלאות עם עיצוב מודרני וחוויית משתמש מותאמת.",
@@ -36,6 +44,14 @@ export const projectsByLocale: Record<Locale, Project[]> = {
     },
   ],
   en: [
+    {
+      title: "Sanity Studio - Hebrew Website Template",
+      description:
+        "Sanity Studio customized for Hebrew with complete website template. Advanced content management system with full RTL support and design tailored for the Israeli market.",
+      href: "https://vercel.com/liormedans-projects/sanity-studio-heb-template-website-",
+      image: "/images/projects/placeholder-sanity.svg",
+      tags: ["Sanity", "CMS", "Hebrew", "Template", "Production"],
+    },
     {
       title: "Lior Landing Page CMS",
       description:
