@@ -12,7 +12,7 @@ The site highlights featured work, a six-month roadmap, skills matrix, and inter
 - **UI Kit**: Radix primitives via shadcn/ui
 - **State**: React 19 with client contexts for language, theme, and palette
 - **3D & Motion**: Three.js, React Three Fiber, Framer Motion, and Spline embeds
-- **Tooling**: TypeScript (strict), ESLint 9, pnpm, next-sitemap, Playwright/Vitest scaffolding
+- **Tooling**: TypeScript (strict), ESLint 9, pnpm, Playwright/Vitest scaffolding
 
 Legacy Stripe/Firebase payment scaffolding was removed; the current focus is a static marketing/portfolio experience.
 
@@ -37,7 +37,7 @@ Visit http://localhost:3000. Language/theme/palette toggles live in the floating
 | Command        | Description |
 | -------------- | ----------- |
 | `pnpm dev`     | Next.js dev server with fast refresh |
-| `pnpm build`   | Production build (`next build` + `next-sitemap` postbuild) |
+| `pnpm build`   | Production build (`next build`) |
 | `pnpm start`   | Run the compiled app with `next start` |
 | `pnpm lint`    | ESLint using the project rules |
 | `pnpm clean`   | Remove `.next/` build cache |
@@ -57,7 +57,7 @@ pnpm dlx vercel --prod
 Ensure you are authenticated (`vercel login`) or provide `VERCEL_TOKEN`.  
 TypeScript build errors are not ignored—production deploys fail if the project is not type-safe.
 
-> `next-sitemap` runs automatically after each production build and expects the standard `.next/build-manifest.json`. If you see “Unable to find build-manifest”, rerun `pnpm build` so Next.js regenerates the manifest before the sitemap step.
+> `app/sitemap.ts` + `app/robots.ts` generate the SEO files automatically during `next build`. Set `NEXT_PUBLIC_SITE_URL` for correct canonical URLs.
 
 ---
 

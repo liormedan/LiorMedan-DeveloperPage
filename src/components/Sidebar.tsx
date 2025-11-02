@@ -7,17 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, FolderOpen, Layers, Map, FileText, MessagesSquare, Mail, Layout, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
+import { Home, FolderOpen, Map, MessagesSquare, Mail, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/language-context";
 
 type NavKey =
   | "home"
   | "roadmap"
   | "projects"
-  | "templates"
   | "quote"
   | "about"
-  | "principles"
   | "contact";
 
 type BaseLink = {
@@ -31,9 +29,7 @@ const NAV_LINKS: BaseLink[] = [
   { href: "/about", key: "about", icon: UserRound },
   { href: "/roadmap", key: "roadmap", icon: Map },
   { href: "/projects", key: "projects", icon: FolderOpen },
-  { href: "/templates", key: "templates", icon: Layout },
   { href: "/quote", key: "quote", icon: MessagesSquare },
-  { href: "/principles", key: "principles", icon: FileText },
   { href: "/contact", key: "contact", icon: Mail },
 ];
 
@@ -41,10 +37,8 @@ const NAV_LABELS: Record<NavKey, { he: string; en: string }> = {
   home: { he: "עמוד הבית", en: "Home" },
   roadmap: { he: "מפת דרכים", en: "Roadmap" },
   projects: { he: "פרויקטים", en: "Projects" },
-  templates: { he: "תבניות", en: "Templates" },
   quote: { he: "הצעת מחיר", en: "Request Quote" },
   about: { he: "אודות", en: "About" },
-  principles: { he: "עקרונות", en: "Principles" },
   contact: { he: "צור קשר", en: "Contact" },
 };
 

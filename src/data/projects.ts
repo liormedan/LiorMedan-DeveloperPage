@@ -28,6 +28,15 @@ export const projectsByLocale: Record<Locale, Project[]> = {
     },
 
     {
+      title: "אפליקציית דוגמאות React תלת־ממד",
+      description:
+        "ספריית דוגמאות אינטראקטיבית של רכיבי תלת-ממד ב-React בשילוב Three.js, המדגימה אנימציות חלקות ויכולות חוויית משתמש עשירה.",
+      href: "https://3-d-react-exampls-app.vercel.app/",
+      image: "/images/projects/placeholder-waveq.svg",
+      tags: ["React", "Three.js", "3D", "Demo"],
+    },
+
+    {
       title: "אתר תדמית ללקוחה פרטית",
       description:
         "פיתוח אתר המבוסס על Next.js עם עיצוב מותאם אישית ויכולות נגישות מתקדמות, כולל תאימות מלאה ל-RTL וחיבור לטפסי לידס.",
@@ -52,6 +61,15 @@ export const projectsByLocale: Record<Locale, Project[]> = {
       href: "https://liorlandingpagecms.vercel.app/",
       image: "/images/projects/placeholder-cms.svg",
       tags: ["Next.js", "CMS", "Landing Page", "Production"],
+    },
+
+    {
+      title: "3D React Examples App",
+      description:
+        "Interactive library of React + Three.js components that showcases smooth 3D animations and immersive front-end techniques.",
+      href: "https://3-d-react-exampls-app.vercel.app/",
+      image: "/images/projects/placeholder-waveq.svg",
+      tags: ["React", "Three.js", "3D", "Demo"],
     },
 
     {

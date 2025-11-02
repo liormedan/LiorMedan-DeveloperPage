@@ -16,7 +16,7 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
   he: [
     {
       month: 1,
-      title: "חודש 1: ינואר 2025 - בניית בסיס טכנולוגי יציב",
+      title: "חודש 1: ספטמבר 2025 - בניית בסיס טכנולוגי יציב",
       project: "הקמת תשתית Next.js עם ממשק RTL מעוצב",
       tasks: [
         {
@@ -39,7 +39,7 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     },
     {
       month: 2,
-      title: "חודש 2: פברואר 2025 - הצגת סיפורי לקוח",
+      title: "חודש 2: אוקטובר 2025 - הצגת סיפורי לקוח",
       project: "בניית ספריית Case Studies מונעת CMS",
       tasks: [
         {
@@ -62,7 +62,7 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     },
     {
       month: 3,
-      title: "חודש 3: מרץ 2025 - חוויית תלת-ממד והדגמת מוצר",
+      title: "חודש 3: נובמבר 2025 - חוויית תלת-ממד והדגמת מוצר",
       project: "פיתוח Playground אינטראקטיבי",
       tasks: [
         {
@@ -85,7 +85,7 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     },
     {
       month: 4,
-      title: "חודש 4: ינואר 2026 - אוטומציה וחיבור למערכות",
+      title: "חודש 4: דצמבר 2025 - אוטומציה וחיבור למערכות",
       project: "הקמת שכבת Serverless מאובטחת",
       tasks: [
         {
@@ -108,7 +108,7 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     },
     {
       month: 5,
-      title: "חודש 5: פברואר 2026 - ביצועים ו-SEO",
+      title: "חודש 5: ינואר 2026 - ביצועים ו-SEO",
       project: "שיפור חוויית המשתמש והמדדים",
       tasks: [
         {
@@ -131,7 +131,7 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     },
     {
       month: 6,
-      title: "חודש 6: מרץ 2026 - בינה מלאכותית והמשך",
+      title: "חודש 6: פברואר 2026 - בינה מלאכותית והמשך",
       project: "עוזר אישי מבוסס AI",
       tasks: [
         {

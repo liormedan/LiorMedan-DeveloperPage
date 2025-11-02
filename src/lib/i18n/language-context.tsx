@@ -21,9 +21,22 @@ function resolveInitialLocale(): Locale {
     return DEFAULT_LOCALE;
   }
 
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  if (stored === "he" || stored === "en") {
-    return stored;
+  try {
+    const urlLocale = new URLSearchParams(window.location.search).get("lang");
+    if (urlLocale === "he" || urlLocale === "en") {
+      return urlLocale;
+    }
+  } catch {
+    // ignore invalid URLs
+  }
+
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored === "he" || stored === "en") {
+      return stored;
+    }
+  } catch {
+    // storage disabled
   }
 
   const browserLanguage = window.navigator.language.toLowerCase();
@@ -43,7 +56,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEY, locale);
+      try {
+        window.localStorage.setItem(STORAGE_KEY, locale);
+      } catch {
+        // storage disabled
+      }
+      try {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get("lang") !== locale) {
+          url.searchParams.set("lang", locale);
+          window.history.replaceState(null, "", url.toString());
+        }
+      } catch {
+        // ignore malformed URL or history restrictions
+      }
     }
 
     if (typeof document !== "undefined") {
