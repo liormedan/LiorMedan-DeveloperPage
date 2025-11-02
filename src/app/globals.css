@@ -128,6 +128,15 @@
 html { direction: rtl; }
 .container-fluid { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
 
+/* Reserve space for the fixed sidebar on large screens using a CSS variable
+   Set by the Sidebar component (defaults to 56px). This prevents the
+   main content from being covered when the sidebar is open or resized. */
+@media (min-width: 1280px) {
+  /* Reserve inline side according to document direction */
+  :root[dir="rtl"] .app-with-sidebar { margin-right: var(--sidebar-width, 56px); transition: margin 120ms; }
+  :root[dir="ltr"] .app-with-sidebar { margin-left: var(--sidebar-width, 56px); transition: margin 120ms; }
+}
+
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(0.5rem) }
   to { opacity: 1; transform: none }

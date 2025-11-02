@@ -3,6 +3,7 @@ import { Accordion, AccordionItem, AccordionContent } from "@/components/ui/acco
 import { roadmapByLocale } from "@/data/roadmap";
 import { useLanguage } from "@/lib/i18n/language-context";
 import React from "react";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
 
 export default function SemiAnnualTimeline() {
   const { locale } = useLanguage();
@@ -96,10 +97,13 @@ export default function SemiAnnualTimeline() {
 
 // Trigger component that makes the whole card clickable for Accordion
 function AccordionCardTrigger({ children }: { children: React.ReactNode }) {
-  // @ts-ignore - Radix Accordion expects a button, but we want div for full area
   return (
-    <div role="button" tabIndex={0} className="w-full outline-none" data-accordion-trigger="true">
-      {children}
-    </div>
+    <AccordionPrimitive.Header className="w-full">
+      <AccordionPrimitive.Trigger asChild>
+        <div role="button" tabIndex={0} className="w-full outline-none" data-accordion-trigger="true">
+          {children}
+        </div>
+      </AccordionPrimitive.Trigger>
+    </AccordionPrimitive.Header>
   );
 }

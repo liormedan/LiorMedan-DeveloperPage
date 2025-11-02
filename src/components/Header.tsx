@@ -15,7 +15,6 @@ const links = [
   { href: "/", label: "בית" },
   { href: "/roadmap", label: "מפת דרכים" },
   { href: "/projects", label: "פרויקטים" },
-  { href: "/skills", label: "כישורים" },
 ];
 
 export default function Header() {
@@ -98,7 +97,6 @@ export default function Header() {
 
     const onMove = (e: MouseEvent) => {
       const target = (e.target as HTMLElement | null)?.closest?.('a[data-nav-link="true"]') as HTMLAnchorElement | null;
-      const all = Object.values(linkRefs.current).filter(Boolean) as HTMLAnchorElement[];
       if (!target) {
         // reset previous
         if (prevMagnetRef.current) prevMagnetRef.current.style.transform = "";
@@ -127,10 +125,11 @@ export default function Header() {
       prevMagnetRef.current = null;
     };
 
-    nav.addEventListener("mousemove", onMove, { passive: true });
+    const moveOptions: AddEventListenerOptions = { passive: true };
+    nav.addEventListener("mousemove", onMove, moveOptions);
     nav.addEventListener("mouseleave", onLeave);
     return () => {
-      nav.removeEventListener("mousemove", onMove as any);
+      nav.removeEventListener("mousemove", onMove, moveOptions);
       nav.removeEventListener("mouseleave", onLeave);
       if (prevMagnetRef.current) prevMagnetRef.current.style.transform = "";
       if (rafMagnet.current) cancelAnimationFrame(rafMagnet.current);

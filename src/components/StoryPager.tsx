@@ -15,7 +15,15 @@ export type StoryStep = {
   icon?: React.ReactNode; // optional icon to render above title
 };
 
-export default function StoryPager({ steps, engine = "three" as "three" | "spline" | "none" }: { steps: StoryStep[]; engine?: "three" | "spline" | "none" }) {
+type ExtendedAudioWindow = Window & {
+  webkitAudioContext?: new () => AudioContext;
+};
+
+const FALLBACK_STEPS: StoryStep[] = [{ id: "__fallback__" }];
+
+export default function StoryPager({ steps, engine = "three" }: { steps: StoryStep[]; engine?: "three" | "spline" | "none" }) {
+  const safeSteps = steps.length > 0 ? steps : FALLBACK_STEPS;
+  const stepCount = safeSteps.length;
   const [idx, setIdx] = React.useState(0);
   const [transitioning, setTransitioning] = React.useState(false);
   const [travel, setTravel] = React.useState(0);
@@ -27,26 +35,22 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
   const [audioLevel, setAudioLevel] = React.useState(0);
   const lastTouch = React.useRef<{ y: number; t: number } | null>(null);
 
-  const clamp = (n: number) => Math.max(0, Math.min(steps.length - 1, n));
   const go = React.useCallback((dir: 1 | -1) => {
     if (transitioning) return;
     setTransitioning(true);
-    const next = clamp(idx + dir);
+    const next = Math.max(0, Math.min(stepCount - 1, idx + dir));
     setTarget(next);
     // animate tunnel pulse 0->1->0 during the transition
-    let raf: number | null = null;
     const t0 = performance.now();
     const dur = 800;
-    // ease for future use (kept simple linear pulse for now)
-    const ease = (x: number) => 1 - Math.pow(1 - x, 3);
     const tick = () => {
       const p = Math.min(1, (performance.now() - t0) / dur);
       setProgress(p);
       setTravel(1 - Math.abs(2 * p - 1));
-      if (p < 1) raf = requestAnimationFrame(tick); else { setIdx(next); setTarget(null); setProgress(0); setTransitioning(false); }
+      if (p < 1) requestAnimationFrame(tick); else { setIdx(next); setTarget(null); setProgress(0); setTransitioning(false); }
     };
-    raf = requestAnimationFrame(tick);
-  }, [transitioning, steps.length, idx]);
+    requestAnimationFrame(tick);
+  }, [transitioning, stepCount, idx]);
 
   // Lock page scroll while pager is mounted
   React.useEffect(() => {
@@ -54,16 +58,20 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
     document.body.style.overflow = "hidden";
     const hintTimeout = setTimeout(() => setShowHint(false), 3500);
     // Intro pulse so שהאפקט בולט גם בכניסה
-    let raf: number | null = null;
+    let rafId: number | null = null;
     const t0 = performance.now();
     const dur = 800;
     const intro = () => {
       const p = Math.min(1, (performance.now() - t0) / dur);
       setTravel(1 - p); // fade 1->0
-      if (p < 1) raf = requestAnimationFrame(intro);
+      if (p < 1) rafId = requestAnimationFrame(intro);
     };
-    raf = requestAnimationFrame(intro);
-    return () => { document.body.style.overflow = prev; clearTimeout(hintTimeout); };
+    rafId = requestAnimationFrame(intro);
+    return () => {
+      document.body.style.overflow = prev;
+      clearTimeout(hintTimeout);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Wheel / keys / touch
@@ -72,7 +80,7 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
       if (transitioning) return;
       if (Math.abs(e.deltaY) < 24) return;
       setShowHint(false);
-      if (e.deltaY > 0 && idx < steps.length - 1) { e.preventDefault(); go(1); }
+      if (e.deltaY > 0 && idx < stepCount - 1) { e.preventDefault(); go(1); }
       else if (e.deltaY < 0 && idx > 0) { e.preventDefault(); go(-1); }
     };
     const onKey = (e: KeyboardEvent) => {
@@ -87,26 +95,25 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
       const dy = (e.changedTouches[0]?.clientY ?? lt.y) - lt.y;
       if (Math.abs(dy) < 30) return;
       setShowHint(false);
-      if (dy < 0 && idx < steps.length - 1) go(1);
+      if (dy < 0 && idx < stepCount - 1) go(1);
       if (dy > 0 && idx > 0) go(-1);
     };
-    const opts: AddEventListenerOptions & EventListenerOptions = { passive: false } as any;
+    const opts: AddEventListenerOptions = { passive: false };
     window.addEventListener("wheel", onWheel, opts);
     window.addEventListener("keydown", onKey);
     window.addEventListener("touchstart", onTouchStart, opts);
     window.addEventListener("touchend", onTouchEnd, opts);
     return () => {
-      window.removeEventListener("wheel", onWheel as any);
-      window.removeEventListener("keydown", onKey as any);
-      window.removeEventListener("touchstart", onTouchStart as any);
-      window.removeEventListener("touchend", onTouchEnd as any);
+      window.removeEventListener("wheel", onWheel, opts);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("touchstart", onTouchStart, opts);
+      window.removeEventListener("touchend", onTouchEnd, opts);
     };
-  }, [idx, transitioning, steps.length, go]);
+  }, [idx, transitioning, stepCount, go]);
 
-  const step = steps[idx] || {};
-  const nextStep = target != null ? steps[target] : null;
-  // Force centered overlay to avoid vertical jumping between slides
-  const align: "center" = "center";
+  const step = safeSteps[Math.min(idx, stepCount - 1)];
+  const nextIndex = target != null ? Math.min(target, stepCount - 1) : null;
+  const nextStep = nextIndex != null ? safeSteps[nextIndex] ?? null : null;
 
   const stepIcon = React.useMemo(() => {
     if (step.icon) return step.icon;
@@ -132,7 +139,7 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
 
   const nextIcon = React.useMemo(() => {
     if (!nextStep) return null;
-    if ((nextStep as any).icon) return (nextStep as any).icon as React.ReactNode;
+    if (nextStep.icon) return nextStep.icon;
     switch (nextStep.id) {
       case "hero":
         return <Star className="h-5 w-5" />;
@@ -182,6 +189,10 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
       { text: "Email", x: "70%", y: "72%" },
     ],
   };
+
+  if (steps.length === 0) {
+    return null;
+  }
 
   return (
     <div className="relative h-dvh overflow-hidden">
@@ -324,32 +335,49 @@ export default function StoryPager({ steps, engine = "three" as "three" | "splin
             try {
               if (audioOn) {
                 audioRef.current?.stop?.();
+                audioRef.current = null;
                 setAudioOn(false); setAudioLevel(0);
                 return;
               }
+              if (!navigator.mediaDevices?.getUserMedia) {
+                console.warn("mediaDevices.getUserMedia is not supported in this browser.");
+                return;
+              }
               const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-              const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+              const audioWindow = window as ExtendedAudioWindow;
+              const AudioContextCtor = window.AudioContext ?? audioWindow.webkitAudioContext;
+              if (!AudioContextCtor) {
+                console.warn("AudioContext is not supported in this browser.");
+                return;
+              }
+              const ctx = new AudioContextCtor();
               const src = ctx.createMediaStreamSource(stream);
               const analyser = ctx.createAnalyser();
               analyser.fftSize = 512; analyser.smoothingTimeConstant = 0.8;
               src.connect(analyser);
               const data = new Uint8Array(analyser.frequencyBinCount);
-              let raf: number | null = null;
+              let rafId: number | null = null;
               const loop = () => {
                 analyser.getByteFrequencyData(data);
                 let sum = 0; for (let i = 0; i < data.length; i++) sum += data[i];
                 const avg = sum / data.length; // 0..255
                 const level = Math.max(0, Math.min(1, (avg - 60) / 140));
                 setAudioLevel((p) => p * 0.8 + level * 0.2); // smooth
-                raf = requestAnimationFrame(loop);
+                rafId = requestAnimationFrame(loop);
               };
-              raf = requestAnimationFrame(loop);
+              rafId = requestAnimationFrame(loop);
               audioRef.current = {
-                stop: () => { if (raf) cancelAnimationFrame(raf); stream.getTracks().forEach((t) => t.stop()); ctx.close(); }
+                stop: () => {
+                  if (rafId) cancelAnimationFrame(rafId);
+                  stream.getTracks().forEach((t) => t.stop());
+                  src.disconnect();
+                  analyser.disconnect();
+                  void ctx.close();
+                }
               };
               setAudioOn(true);
-            } catch (e) {
-              console.warn("Audio reactive denied/unavailable", e);
+            } catch (error) {
+              console.warn("Audio reactive denied/unavailable", error);
             }
           }}
         >

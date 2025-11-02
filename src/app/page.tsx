@@ -7,13 +7,13 @@ import { useLanguage } from "@/lib/i18n/language-context";
 
 const COPY = {
   he: {
-    title: "היי! אני ליאור מדן",
+    title: "בונים מוצר דיגיטלי בסטנדרט גבוה",
     subtitle:
       "אני בונה חוויות web מודרניות עם React ו-Python. אשמח לעזור לכם להוציא לפועל את הפרויקט הבא שלכם בעזרת תכנון מדויק, תהליך שקוף ותוצרים שמייצרים אימפקט.",
     cta: "ראו פרויקטים",
   },
   en: {
-    title: "Hi, I’m Lior Medan",
+    title: "Build a modern product with confidence",
     subtitle:
       "I craft modern web experiences with React and Python. Let’s bring your next project to life with clear planning, transparent delivery, and products that make an impact.",
     cta: "View Projects",

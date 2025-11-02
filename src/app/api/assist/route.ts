@@ -72,11 +72,12 @@ export async function POST(req: NextRequest) {
     let data: AssistOutput;
     try {
       data = JSON.parse(text) as AssistOutput;
-    } catch (e) {
+    } catch {
       return Response.json({ ok: false, error: "parse_error", sample: text.slice(0, 400) }, { status: 502 });
     }
     return Response.json({ ok: true, data, locale });
-  } catch (e: any) {
-    return Response.json({ ok: false, error: "upstream_error", message: String(e?.message || e) }, { status: 502 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return Response.json({ ok: false, error: "upstream_error", message }, { status: 502 });
   }
 }

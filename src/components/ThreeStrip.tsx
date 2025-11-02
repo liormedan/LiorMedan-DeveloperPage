@@ -172,7 +172,15 @@ export default function ThreeStrip({ height = 220, fill, className, audioMode = 
       return;
     }
     let stopped = false;
-    const ac = new (window.AudioContext || (window as any).webkitAudioContext)();
+    type AudioContextConstructor = new () => AudioContext;
+    type ExtendedWindow = Window & { webkitAudioContext?: AudioContextConstructor };
+    const audioWindow = window as ExtendedWindow;
+    const AudioContextCtor = window.AudioContext ?? audioWindow.webkitAudioContext;
+    if (!AudioContextCtor) {
+      console.warn("AudioContext is not supported in this browser.");
+      return;
+    }
+    const ac = new AudioContextCtor();
     const analyser = ac.createAnalyser();
     analyser.fftSize = 512;
     analyserRef.current = analyser;
@@ -180,6 +188,10 @@ export default function ThreeStrip({ height = 220, fill, className, audioMode = 
     const connectSource = async () => {
       if (audioMode === "mic") {
         try {
+          if (!navigator.mediaDevices?.getUserMedia) {
+            console.warn("mediaDevices.getUserMedia is not supported in this browser.");
+            return;
+          }
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           const src = ac.createMediaStreamSource(stream);
           src.connect(analyser);
@@ -188,8 +200,8 @@ export default function ThreeStrip({ height = 220, fill, className, audioMode = 
             src.disconnect();
             ac.close();
           };
-        } catch (e) {
-          console.warn("Microphone access denied", e);
+        } catch (error) {
+          console.warn("Microphone access denied", error);
         }
       } else if (audioMode === "demo") {
         const osc = ac.createOscillator();

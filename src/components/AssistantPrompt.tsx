@@ -44,6 +44,40 @@ type Quote = {
   assumptions: string[];
 };
 
+type QuoteResponse =
+  | ({ ok: true; locale: string } & Quote)
+  | { ok: false; error?: string | null; locale?: string };
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+type SpeechRecognitionAlternativeLike = { transcript: string };
+
+type SpeechRecognitionResultLike = {
+  0: SpeechRecognitionAlternativeLike;
+  length: number;
+  isFinal?: boolean;
+};
+
+type SpeechRecognitionEventLike = {
+  results: ArrayLike<SpeechRecognitionResultLike>;
+};
+
+type SpeechRecognitionInstance = {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: Event) => void) | null;
+  onend: ((event: Event) => void) | null;
+  start: () => void;
+};
+
+type RecognitionWindow = Window &
+  Partial<{
+    SpeechRecognition: SpeechRecognitionConstructor;
+    webkitSpeechRecognition: SpeechRecognitionConstructor;
+  }>;
+
 export default function AssistantPrompt() {
   const { locale, direction } = useLanguage();
   const copy = COPY[locale];
@@ -63,10 +97,14 @@ export default function AssistantPrompt() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: value, locale }),
       });
-      const json = await response.json();
+      const json = (await response.json()) as QuoteResponse;
       if (!json.ok) throw new Error("failed");
-      setRes(json);
-    } catch (e) {
+      setRes({
+        estimate: json.estimate,
+        mvp: json.mvp,
+        assumptions: json.assumptions,
+      });
+    } catch {
       setErr(copy.requestError);
     } finally {
       setLoading(false);
@@ -74,7 +112,9 @@ export default function AssistantPrompt() {
   };
 
   const startListening = () => {
-    const Recognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    const recognitionWindow = window as RecognitionWindow;
+    const Recognition =
+      recognitionWindow.SpeechRecognition || recognitionWindow.webkitSpeechRecognition;
     if (!Recognition) {
       setErr(copy.speechUnsupported);
       return;
@@ -84,10 +124,11 @@ export default function AssistantPrompt() {
     rec.interimResults = true;
     rec.continuous = false;
     setListening(true);
-    rec.onresult = (event: any) => {
+    rec.onresult = (event) => {
       const transcript = Array.from(event.results)
-        .map((result: any) => result[0].transcript)
-        .join(" ");
+        .map((result) => result[0]?.transcript ?? "")
+        .join(" ")
+        .trim();
       setValue(transcript);
     };
     rec.onerror = () => {

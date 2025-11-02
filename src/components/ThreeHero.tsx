@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -7,7 +6,7 @@ import { useRef } from 'react';
 import type { Mesh } from 'three';
 
 function RotatingBox() {
-  const meshRef = useRef<Mesh>(null);
+  const meshRef = useRef<Mesh | null>(null);
   useFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.x += 0.01;

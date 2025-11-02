@@ -4,6 +4,7 @@ import AssistRender from "@/components/AssistRender";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/lib/i18n/language-context";
+import type { AssistOutput } from "@/lib/assistSchema";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -44,8 +45,12 @@ export default function ChatAssist() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [json, setJson] = useState<any | null>(null);
+  const [json, setJson] = useState<AssistOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  type AssistResponse =
+    | { ok: true; data: AssistOutput; locale: string }
+    | { ok: false; error?: string | null; locale?: string };
 
   const send = async () => {
     if (!input.trim() || busy) return;
@@ -60,11 +65,11 @@ export default function ChatAssist() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: text, locale }),
       });
-      const json = await response.json();
-      if (!json.ok) throw new Error(json.error || "failed");
-      setJson(json.data);
+      const payload = (await response.json()) as AssistResponse;
+      if (!payload.ok) throw new Error(payload.error || "failed");
+      setJson(payload.data);
       setMsgs((m) => [...m, { role: "assistant", content: copy.assistantReply }]);
-    } catch (e) {
+    } catch {
       setError(copy.error);
     } finally {
       setBusy(false);
@@ -79,7 +84,11 @@ export default function ChatAssist() {
             <div key={idx}>{line}</div>
           ))}
         </div>
-        <div className={`flex items-center gap-2 ${direction === "rtl" ? "flex-row-reverse" : ""}`}>
+        <div
+          className={`flex flex-col gap-3 sm:flex-row sm:items-center ${
+            direction === "rtl" ? "sm:flex-row-reverse" : ""
+          }`}
+        >
           <Input
             placeholder={copy.placeholder}
             value={input}
@@ -88,8 +97,13 @@ export default function ChatAssist() {
               if (e.key === "Enter") send();
             }}
             dir={direction}
+            className="w-full"
           />
-          <div className={`flex gap-2 ${direction === "rtl" ? "flex-row-reverse" : ""}`}>
+          <div
+            className={`flex flex-col sm:flex-row gap-2 ${
+              direction === "rtl" ? "sm:flex-row-reverse" : ""
+            }`}
+          >
             <Button
               variant="secondary"
               onClick={() => {
@@ -99,10 +113,11 @@ export default function ChatAssist() {
                 setInput("");
               }}
               disabled={busy}
+              className="w-full sm:w-auto"
             >
               {copy.clear}
             </Button>
-            <Button onClick={send} disabled={busy}>
+            <Button onClick={send} disabled={busy} className="w-full sm:w-auto">
               {busy ? copy.sendBusy : copy.sendIdle}
             </Button>
           </div>

@@ -18,10 +18,31 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
   const ref = React.useRef<HTMLDivElement | null>(null);
   const rendererRef = React.useRef<THREE.WebGLRenderer | null>(null);
   const frameRef = React.useRef<number | null>(null);
-  const objectsRef = React.useRef<{ center?: THREE.Mesh; orbiters?: THREE.Mesh[] }>({});
-  const cameraRef = React.useRef<THREE.PerspectiveCamera | null>(null);
+  type HeroMesh = THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>;
+  const objectsRef = React.useRef<{ center?: HeroMesh; orbiters?: HeroMesh[] }>({});
+  const cameraRef = React.useRef<THREE.PerspectiveCamera | THREE.OrthographicCamera | null>(null);
   const sceneRef = React.useRef<THREE.Scene | null>(null);
-  const bgUniformsRef = React.useRef<{ uTime: { value: number }; uColor1: { value: THREE.Color }; uColor2: { value: THREE.Color }; uTravel: { value: number }; uAudio: { value: number }; uTrans: { value: number } } | null>(null);
+  const bgUniformsRef = React.useRef<{
+    uTime: { value: number };
+    uColor1: { value: THREE.Color };
+    uColor2: { value: THREE.Color };
+    uTravel: { value: number };
+    uAudio: { value: number };
+    uTrans: { value: number };
+  } | null>(null);
+  const travelPulseRef = React.useRef(travelPulse);
+  const audioLevelRef = React.useRef(audioLevel);
+  const transitionProgressRef = React.useRef(transitionProgress);
+
+  React.useEffect(() => {
+    travelPulseRef.current = travelPulse;
+  }, [travelPulse]);
+  React.useEffect(() => {
+    audioLevelRef.current = audioLevel;
+  }, [audioLevel]);
+  React.useEffect(() => {
+    transitionProgressRef.current = transitionProgress;
+  }, [transitionProgress]);
 
   // init
   React.useEffect(() => {
@@ -34,9 +55,10 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
     // Choose camera by mode
     let camera: THREE.Camera;
     if (backgroundOnly) {
+      objectsRef.current = {};
       const ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
       camera = ortho;
-      cameraRef.current = ortho as any;
+      cameraRef.current = ortho;
     } else {
       const persp = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
       persp.position.set(0, 0.5, 3.2);
@@ -47,7 +69,7 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.outputColorSpace = THREE.SRGBColorSpace as any;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -61,10 +83,10 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
         uTime: { value: 0 },
         uColor1: { value: primary.clone() },
         uColor2: { value: accent.clone() },
-        uTravel: { value: 0 },
-        uAudio: { value: 0 },
-        uTrans: { value: 0 },
-      } as const;
+        uTravel: { value: Math.max(0, Math.min(1, travelPulseRef.current || 0)) },
+        uAudio: { value: Math.max(0, Math.min(1, audioLevelRef.current || 0)) },
+        uTrans: { value: Math.max(0, Math.min(1, transitionProgressRef.current || 0)) },
+      };
       bgUniformsRef.current = uniforms;
       const mat = new THREE.ShaderMaterial({
         uniforms,
@@ -147,7 +169,7 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
       scene.add(center);
 
       // Orbiting spheres
-      const orbiters: THREE.Mesh[] = [];
+      const orbiters: HeroMesh[] = [];
       for (let i = 0; i < 5; i++) {
         const g = new THREE.SphereGeometry(0.18 + i * 0.02, 32, 32);
         const m = new THREE.MeshStandardMaterial({ color: accent, roughness: 0.35, metalness: 0.15 });
@@ -163,9 +185,9 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
       if (!container || !cameraRef.current || !rendererRef.current) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      if ((cameraRef.current as any).isPerspectiveCamera) {
-        (cameraRef.current as THREE.PerspectiveCamera).aspect = w / h;
-        (cameraRef.current as THREE.PerspectiveCamera).updateProjectionMatrix();
+      if (cameraRef.current instanceof THREE.PerspectiveCamera) {
+        cameraRef.current.aspect = w / h;
+        cameraRef.current.updateProjectionMatrix();
       }
       rendererRef.current.setSize(w, h);
     };
@@ -185,9 +207,9 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
       }
       if (backgroundOnly && bgUniformsRef.current) {
         bgUniformsRef.current.uTime.value = t;
-        bgUniformsRef.current.uTravel.value = travelPulse || 0;
-        bgUniformsRef.current.uAudio.value = Math.max(0, Math.min(1, audioLevel || 0));
-        bgUniformsRef.current.uTrans.value = Math.max(0, Math.min(1, transitionProgress || 0));
+        bgUniformsRef.current.uTravel.value = Math.max(0, Math.min(1, travelPulseRef.current || 0));
+        bgUniformsRef.current.uAudio.value = Math.max(0, Math.min(1, audioLevelRef.current || 0));
+        bgUniformsRef.current.uTrans.value = Math.max(0, Math.min(1, transitionProgressRef.current || 0));
       }
       if (objectsRef.current.orbiters) {
         if (!backgroundOnly) {
@@ -205,6 +227,15 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
     frameRef.current = requestAnimationFrame(animate);
 
     return () => {
+      const disposeMaterial = (material: THREE.Material | THREE.Material[] | undefined) => {
+        if (!material) return;
+        if (Array.isArray(material)) {
+          material.forEach(disposeMaterial);
+          return;
+        }
+        if (typeof material.dispose === "function") material.dispose();
+      };
+
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
       ro.disconnect();
       if (rendererRef.current) {
@@ -214,17 +245,20 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
       // Dispose geo/mats
       const { center, orbiters } = objectsRef.current;
       center?.geometry.dispose();
-      (center?.material as any)?.dispose?.();
-      orbiters?.forEach((m) => { m.geometry.dispose(); (m.material as any)?.dispose?.(); });
+      disposeMaterial(center?.material);
+      orbiters?.forEach((m) => {
+        m.geometry.dispose();
+        disposeMaterial(m.material);
+      });
       scene.clear();
     };
-  }, [autoRotate]);
+  }, [autoRotate, backgroundOnly]);
 
   // Basic camera tween on step change
   React.useEffect(() => {
     const camera = cameraRef.current;
     if (!camera) return;
-    if ((camera as any).isOrthographicCamera) return; // background-only mode uses fullscreen quad
+    if (camera instanceof THREE.OrthographicCamera) return; // background-only mode uses fullscreen quad
     const idx = Number(step || 0);
     const targets = [
       new THREE.Vector3(0, 0.5, 3.2),
@@ -238,14 +272,14 @@ export default function HeroThree({ step, autoRotate = true, backgroundOnly = fa
     const apply = () => {
       camera.position.lerp(to, 0.1);
     };
-    const id = setInterval(apply, 16);
-    const timeout = setTimeout(() => clearInterval(id), 500);
+    const id = window.setInterval(apply, 16);
+    const timeout = window.setTimeout(() => clearInterval(id), 500);
     return () => { clearInterval(id); clearTimeout(timeout); };
   }, [step]);
 
   // Update travel pulse on prop change
   React.useEffect(() => {
-    if (bgUniformsRef.current) bgUniformsRef.current.uTravel.value = travelPulse || 0;
+    if (bgUniformsRef.current) bgUniformsRef.current.uTravel.value = Math.max(0, Math.min(1, travelPulse || 0));
   }, [travelPulse]);
 
   // Update audio uniform on prop change

@@ -135,48 +135,75 @@ export default function VoiceVisualizer3D({ className, bars = 96 }: Props) {
     resize();
 
     // Audio setup: default to microphone; if denied, use demo oscillator
-    const ac = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const analyser = ac.createAnalyser();
-    analyser.fftSize = 512;
-    analyserRef.current = analyser;
+    type AudioContextConstructor = new () => AudioContext;
+    type ExtendedWindow = Window & { webkitAudioContext?: AudioContextConstructor };
+    const extendedWindow = window as ExtendedWindow;
+    const AudioContextClass = window.AudioContext ?? extendedWindow.webkitAudioContext;
 
-    const setupMic = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const src = ac.createMediaStreamSource(stream);
-        src.connect(analyser);
-        cleanupRef.current = () => {
-          stream.getTracks().forEach((t) => t.stop());
-          src.disconnect();
-          ac.close();
-        };
-      } catch (e) {
-        // Fallback to demo tone
-        const osc = ac.createOscillator();
-        const gain = ac.createGain();
-        osc.type = "sine";
-        osc.frequency.value = 180;
-        gain.gain.value = 0.15;
-        osc.connect(gain).connect(analyser);
-        osc.start();
-        cleanupRef.current = () => {
-          try { osc.stop(); } catch {}
-          osc.disconnect();
-          gain.disconnect();
-          ac.close();
-        };
-      }
-    };
-    setupMic();
+    if (AudioContextClass) {
+      const ac = new AudioContextClass();
+      const analyserNode = ac.createAnalyser();
+      analyserNode.fftSize = 512;
+      analyserRef.current = analyserNode;
+
+      const closeAudio = () => {
+        analyserRef.current = null;
+        try {
+          void ac.close();
+        } catch {
+          // ignore
+        }
+      };
+      cleanupRef.current = closeAudio;
+
+      const setupMic = async () => {
+        try {
+          if (!navigator.mediaDevices?.getUserMedia) throw new Error("getUserMedia unsupported");
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const src = ac.createMediaStreamSource(stream);
+          src.connect(analyserNode);
+          cleanupRef.current = () => {
+            stream.getTracks().forEach((t) => t.stop());
+            src.disconnect();
+            closeAudio();
+          };
+        } catch {
+          // Fallback to demo tone
+          const osc = ac.createOscillator();
+          const gain = ac.createGain();
+          osc.type = "sine";
+          osc.frequency.value = 180;
+          gain.gain.value = 0.15;
+          osc.connect(gain);
+          gain.connect(analyserNode);
+          osc.start();
+          cleanupRef.current = () => {
+            try {
+              osc.stop();
+            } catch {
+              // ignore
+            }
+            osc.disconnect();
+            gain.disconnect();
+            closeAudio();
+          };
+        }
+      };
+      void setupMic();
+    } else {
+      console.warn("AudioContext is not supported in this browser.");
+      analyserRef.current = null;
+    }
 
     // Animate
-    const bins = new Uint8Array(analyser.frequencyBinCount);
+    const bins = new Uint8Array(Math.max(1, analyserRef.current?.frequencyBinCount ?? 1));
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
     const heights = new Float32Array(bars).fill(0.6);
 
     const render = () => {
       const speed = prefersReduced ? 0 : 1;
-      if (speed > 0 && analyser) analyser.getByteFrequencyData(bins);
+      const activeAnalyser = analyserRef.current;
+      if (speed > 0 && activeAnalyser) activeAnalyser.getByteFrequencyData(bins);
       // Map bins onto bars with smoothing and slight phase offset
       for (let i = 0; i < bars; i++) {
         const bi = Math.floor((i / bars) * bins.length);
@@ -209,8 +236,6 @@ export default function VoiceVisualizer3D({ className, bars = 96 }: Props) {
       lineMat.opacity = 0.15 + amp * 0.4;
       for (let i = 0; i < linePairs.length; i++) {
         const [a, b] = linePairs[i];
-        const A = nodePositions[a];
-        const B = nodePositions[b];
         // fetch potentially wobbled transforms
         nodes.getMatrixAt(a, nodeDummy.matrix); nodeDummy.matrix.decompose(nodeDummy.position, nodeDummy.quaternion, nodeDummy.scale);
         const ax = nodeDummy.position.x, ay = nodeDummy.position.y, az = nodeDummy.position.z;

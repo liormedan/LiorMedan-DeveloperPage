@@ -137,7 +137,6 @@ export default function AssistRender({ data }: Props) {
             title={copy.scope.useCases}
             cases={data.scope.use_cases}
             labels={{ asA: copy.scope.asA, iWant: copy.scope.iWant, soThat: copy.scope.soThat }}
-            direction={direction}
           />
         </div>
       </Section>
@@ -218,7 +217,7 @@ export default function AssistRender({ data }: Props) {
           ))}
         </div>
         {data.diagrams?.gantt && (
-          <Gantt tasks={data.diagrams.gantt.tasks} totalWeeks={totalWeeks} label={copy.plan.ganttLabel} direction={direction} />
+          <Gantt tasks={data.diagrams.gantt.tasks} totalWeeks={totalWeeks} label={copy.plan.ganttLabel} />
         )}
       </Section>
 
@@ -291,12 +290,10 @@ function UseCases({
   title,
   cases,
   labels,
-  direction,
 }: {
   title: string;
   cases: { title: string; as_a?: string; i_want?: string; so_that?: string }[];
   labels: { asA: string; iWant: string; soThat: string };
-  direction: "rtl" | "ltr";
 }) {
   if (!cases || cases.length === 0) {
     return null;
@@ -324,12 +321,10 @@ function Gantt({
   tasks,
   totalWeeks,
   label,
-  direction,
 }: {
   tasks: { title: string; start_week: number; weeks: number }[];
   totalWeeks: number;
   label: string;
-  direction: "rtl" | "ltr";
 }) {
   if (!tasks || tasks.length === 0) {
     return null;
