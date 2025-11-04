@@ -1,39 +1,53 @@
 ﻿"use client";
 
-import { Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/language-context";
+import * as React from "react";
 
 const LABELS = {
   he: {
-    current: "עברית",
-    next: "English",
     aria: "החלף שפה לאנגלית",
   },
   en: {
-    current: "English",
-    next: "עברית",
     aria: "Switch language to Hebrew",
   },
 } as const;
 
 export default function LanguageToggle() {
   const { locale, toggleLocale } = useLanguage();
-  const { current, next, aria } = LABELS[locale];
+  const { aria } = LABELS[locale];
+  const isHebrew = locale === "he";
 
   return (
-    <Button
+    <button
       type="button"
-      variant="ghost"
-      size="sm"
-      className="flex items-center gap-1 px-2"
       onClick={toggleLocale}
       aria-label={aria}
+      className="relative inline-flex h-6 w-12 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-input hover:bg-input/80"
+      role="switch"
+      aria-checked={isHebrew}
     >
-      <Globe className="h-4 w-4" aria-hidden="true" />
-      <span className="text-xs font-medium">{current}</span>
-      <span aria-hidden="true" className="text-muted-foreground">/</span>
-      <span className="text-xs text-muted-foreground">{next}</span>
-    </Button>
+      <span className="sr-only">{aria}</span>
+      {/* Toggle thumb */}
+      <span
+        className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-md ring-0 transition-transform duration-200 ease-in-out ${
+          isHebrew ? "translate-x-7" : "translate-x-1"
+        }`}
+      />
+      {/* Labels */}
+      <span
+        className={`absolute left-1.5 text-[9px] font-semibold transition-opacity duration-200 ${
+          isHebrew ? "opacity-30" : "opacity-70"
+        }`}
+      >
+        EN
+      </span>
+      <span
+        className={`absolute right-1.5 text-[9px] font-semibold transition-opacity duration-200 ${
+          isHebrew ? "opacity-70" : "opacity-30"
+        }`}
+      >
+        ע
+      </span>
+    </button>
   );
 }

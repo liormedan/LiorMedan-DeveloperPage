@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { PaletteProvider } from "@/components/PaletteProvider";
 import PageTransition from "@/components/PageTransition";
 import { LanguageProvider } from "@/lib/i18n/language-context";
-import TopLeftControls from "@/components/TopLeftControls";
 
 const rubik = Rubik({ subsets: ["hebrew", "latin"], variable: "--font-hebrew" });
 
@@ -27,7 +26,6 @@ export default function RootLayout({
         <LanguageProvider>
           <ThemeProvider>
             <PaletteProvider>
-              <TopLeftControls />
         {/* Layout with sidebar on the right (RTL). Sidebar writes --sidebar-width
           to :root; the container uses that variable on large screens to avoid
           being covered by the fixed sidebar. */}

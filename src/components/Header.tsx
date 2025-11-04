@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const links = [
   { href: "/", label: "בית" },
@@ -180,6 +181,7 @@ export default function Header() {
           </div>
         </NavigationMenu>
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
           <Button asChild size="sm"><Link href="/contact">דברו איתי</Link></Button>
         </div>

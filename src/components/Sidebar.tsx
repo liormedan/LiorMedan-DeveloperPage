@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageToggle from "@/components/LanguageToggle";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Home, FolderOpen, Map, MessagesSquare, Mail, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -276,7 +277,8 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto w-full p-2">
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
         </div>
         <Separator className="my-2" />
@@ -337,6 +339,7 @@ export default function Sidebar() {
                 {labels.menu}
               </Link>
               <div className="flex items-center gap-2">
+                <LanguageToggle />
                 <ThemeToggle />
               </div>
             </div>
