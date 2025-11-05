@@ -11,6 +11,14 @@ export type Project = {
 export const projectsByLocale: Record<Locale, Project[]> = {
   he: [
     {
+      title: "Playground תלת-ממדי - חוויית עבודה אינטראקטיבית",
+      description:
+        "חוויית Playground מתקדמת שממחישה את תהליך העבודה המלא - מגילוי ועד הפצה. אינטראקציה עם השלבים השונים, תנועה חלקה ואנימציות מתקדמות עם Three.js ו-Framer Motion.",
+      href: "/playground",
+      image: "/images/projects/placeholder-playground.svg",
+      tags: ["Three.js", "React Three Fiber", "Framer Motion", "Interactive", "3D"],
+    },
+    {
       title: "Sanity Studio - תבנית אתר עברית",
       description:
         "סטודיו Sanity מותאם לעברית עם תבנית אתר מלאה. מערכת ניהול תוכן מתקדמת עם תמיכה מלאה ב-RTL ועיצוב מותאם לשוק הישראלי.",
@@ -28,15 +36,6 @@ export const projectsByLocale: Record<Locale, Project[]> = {
     },
 
     {
-      title: "אפליקציית דוגמאות React תלת־ממד",
-      description:
-        "ספריית דוגמאות אינטראקטיבית של רכיבי תלת-ממד ב-React בשילוב Three.js, המדגימה אנימציות חלקות ויכולות חוויית משתמש עשירה.",
-      href: "https://3-d-react-exampls-app.vercel.app/",
-      image: "/images/projects/placeholder-waveq.svg",
-      tags: ["React", "Three.js", "3D", "Demo"],
-    },
-
-    {
       title: "אתר תדמית ללקוחה פרטית",
       description:
         "פיתוח אתר המבוסס על Next.js עם עיצוב מותאם אישית ויכולות נגישות מתקדמות, כולל תאימות מלאה ל-RTL וחיבור לטפסי לידס.",
@@ -46,6 +45,14 @@ export const projectsByLocale: Record<Locale, Project[]> = {
     },
   ],
   en: [
+    {
+      title: "3D Playground - Interactive Work Experience",
+      description:
+        "An advanced Playground experience that visualizes the complete work process - from discovery to deployment. Interact with different stages, smooth motion and advanced animations with Three.js and Framer Motion.",
+      href: "/playground",
+      image: "/images/projects/placeholder-playground.svg",
+      tags: ["Three.js", "React Three Fiber", "Framer Motion", "Interactive", "3D"],
+    },
     {
       title: "Sanity Studio - Hebrew Website Template",
       description:
@@ -61,15 +68,6 @@ export const projectsByLocale: Record<Locale, Project[]> = {
       href: "https://liorlandingpagecms.vercel.app/",
       image: "/images/projects/placeholder-cms.svg",
       tags: ["Next.js", "CMS", "Landing Page", "Production"],
-    },
-
-    {
-      title: "3D React Examples App",
-      description:
-        "Interactive library of React + Three.js components that showcases smooth 3D animations and immersive front-end techniques.",
-      href: "https://3-d-react-exampls-app.vercel.app/",
-      image: "/images/projects/placeholder-waveq.svg",
-      tags: ["React", "Three.js", "3D", "Demo"],
     },
 
     {

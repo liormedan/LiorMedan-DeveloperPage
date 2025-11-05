@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageToggle from "@/components/LanguageToggle";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Home, FolderOpen, Map, MessagesSquare, Mail, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/language-context";
 
@@ -334,6 +334,7 @@ export default function Sidebar() {
             className="w-[min(18rem,calc(100vw-3rem))]"
             dir={direction}
           >
+            <SheetTitle className="sr-only">{labels.menu}</SheetTitle>
             <div className="flex items-center justify-between mb-3">
               <Link href="/" className="font-semibold" onClick={() => {}}>
                 {labels.menu}

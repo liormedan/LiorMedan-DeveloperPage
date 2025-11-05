@@ -17,6 +17,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // Fix for React Three Fiber and Next.js 15
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
+  // Ensure React Three Fiber components are properly handled
+  transpilePackages: ["@react-three/fiber", "@react-three/drei"],
 };
 
 export default nextConfig;

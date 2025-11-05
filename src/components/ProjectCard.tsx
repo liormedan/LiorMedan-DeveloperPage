@@ -145,8 +145,10 @@ export default function ProjectCard({ title, description, href, image, tags }: P
     });
   };
 
+  const isExternal = href.startsWith("http");
+  
   return (
-    <Link href={href} target="_blank" className="block focus:outline-none">
+    <Link href={href} target={isExternal ? "_blank" : undefined} className="block focus:outline-none">
       <Card
         ref={cardRef}
         onMouseMove={onMove}
