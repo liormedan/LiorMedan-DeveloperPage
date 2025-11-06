@@ -70,3 +70,12 @@ public/images/
 # Local design/config artifacts
 *.splinecode
 components.json
+
+# Python audio server
+audio_server/__pycache__/
+audio_server/*.pyc
+audio_server/.venv/
+audio_server/venv/
+audio_server/env/
+*.pyc
+__pycache__/

@@ -63,12 +63,8 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     {
       month: 3,
       title: "חודש 3: נובמבר 2025 - חוויית תלת-ממד והדגמת מוצר",
-      project: "פיתוח Playground אינטראקטיבי",
+      project: "שילוב חוויות תלת-ממדיות",
       tasks: [
-        {
-          title: "הקמת Playground תלת-ממדי",
-          details: "יצירת סצנה אינטראקטיבית שממחישה את תהליך העבודה ומוסיפה חוויית משתמש ייחודית.",
-        },
         {
           title: "שילוב Three.js / Spline",
           details: "בניית הדמיות מותאמות אישית עם תנועה מבוקרת וגרפיקה חלקה.",
@@ -203,12 +199,8 @@ export const roadmapByLocale: Record<Locale, RoadmapMonth[]> = {
     {
       month: 3,
       title: "Month 3: March 2025 – 3D Experience & Product Demo",
-      project: "Building an interactive Playground",
+      project: "Integrating 3D experiences",
       tasks: [
-        {
-          title: "Launch a 3D playground",
-          details: "Create an immersive scene that illustrates the workflow and adds delight.",
-        },
         {
           title: "Integrate Three.js / Spline",
           details: "Craft bespoke animations with smooth motion and carefully tuned lighting.",
