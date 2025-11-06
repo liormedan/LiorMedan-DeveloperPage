@@ -10,7 +10,7 @@ type SpeakerProps = {
   side: "left" | "right" | "center" | "rear-left" | "rear-right" | "side-left" | "side-right";
   isPlaying: boolean;
   volume: number;
-  mode: "stereo" | "mono" | "surround" | "5.1" | "7.1";
+  mode: "stereo" | "mono" | "surround";
   rotation?: [number, number, number];
 };
 

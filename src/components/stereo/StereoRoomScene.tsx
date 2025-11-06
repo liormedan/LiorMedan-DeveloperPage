@@ -18,7 +18,7 @@ type StereoRoomSceneProps = {
   isPlaying: boolean;
   onTogglePlay: () => void;
   volume: number;
-  mode: "stereo" | "mono" | "surround" | "5.1" | "7.1";
+  mode: "stereo" | "mono" | "surround";
   showXRay: boolean;
   vuMeter: number[];
   stereoPosition: [number, number, number];
@@ -79,160 +79,24 @@ export function StereoRoomScene({
       />
 
       {/* Speakers - Dynamic based on mode */}
-      {mode === "5.1" ? (
-        <>
-          {/* Front Left - בגובה ראש, משמאל, פונה לספה */}
-          <SpeakerStand position={[-2.5, 0.6, -4.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[-2.5, 1.2, -4.5]}
-            side="left"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, Math.PI / 4, 0]}
-          />
-          {/* Front Right - בגובה ראש, מימין, פונה לספה */}
-          <SpeakerStand position={[2.5, 0.6, -4.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[2.5, 1.2, -4.5]}
-            side="right"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, -Math.PI / 4, 0]}
-          />
-          {/* Center Channel - אנכי על הקיר למעלה - ללא מעמד */}
-          <Speaker
-            position={[0, 2.2, -4.95]}
-            side="center"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[Math.PI / 2, 0, 0]}
-          />
-          {/* Rear Left - מאחורי המאזין, משמאל - פונה למרכז החדר (45 מעלות) */}
-          <SpeakerStand position={[-2.5, 0.6, 2.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[-2.5, 1.2, 2.5]}
-            side="rear-left"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, Math.PI / 4, 0]}
-          />
-          {/* Rear Right - מאחורי המאזין, מימין - פונה למרכז החדר (45 מעלות) */}
-          <SpeakerStand position={[2.5, 0.6, 2.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[2.5, 1.2, 2.5]}
-            side="rear-right"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, -Math.PI / 4, 0]}
-          />
-          {/* Subwoofer - מתחת למערכת */}
-          <Subwoofer
-            position={[stereoPosition[0], stereoPosition[1] - 0.3, stereoPosition[2]]}
-            isPlaying={isPlaying}
-            volume={volume}
-          />
-        </>
-      ) : mode === "7.1" ? (
-        <>
-          {/* Front Left - בגובה ראש, משמאל, פונה לספה */}
-          <SpeakerStand position={[-2.5, 0.6, -4.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[-2.5, 1.2, -4.5]}
-            side="left"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, Math.PI / 4, 0]}
-          />
-          {/* Front Right - בגובה ראש, מימין, פונה לספה */}
-          <SpeakerStand position={[2.5, 0.6, -4.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[2.5, 1.2, -4.5]}
-            side="right"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, -Math.PI / 4, 0]}
-          />
-          {/* Center Channel - אנכי על הקיר למעלה - ללא מעמד */}
-          <Speaker
-            position={[0, 2.2, -4.95]}
-            side="center"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[Math.PI / 2, 0, 0]}
-          />
-          {/* Side Left - בצד שמאל, באותה רמה כמו המאזין */}
-          <SpeakerStand position={[-3.5, 0.6, 0]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[-3.5, 1.2, 0]}
-            side="side-left"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, Math.PI / 2, 0]}
-          />
-          {/* Side Right - בצד ימין, באותה רמה כמו המאזין */}
-          <SpeakerStand position={[3.5, 0.6, 0]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[3.5, 1.2, 0]}
-            side="side-right"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, -Math.PI / 2, 0]}
-          />
-          {/* Rear Left - מאחורי המאזין, משמאל - פונה למרכז החדר (45 מעלות) */}
-          <SpeakerStand position={[-2.5, 0.6, 2.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[-2.5, 1.2, 2.5]}
-            side="rear-left"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, Math.PI / 4, 0]}
-          />
-          {/* Rear Right - מאחורי המאזין, מימין - פונה למרכז החדר (45 מעלות) */}
-          <SpeakerStand position={[2.5, 0.6, 2.5]} height={0.6} width={0.22} depth={0.22} />
-          <Speaker
-            position={[2.5, 1.2, 2.5]}
-            side="rear-right"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-            rotation={[0, -Math.PI / 4, 0]}
-          />
-          {/* Subwoofer - מתחת למערכת */}
-          <Subwoofer
-            position={[stereoPosition[0], stereoPosition[1] - 0.3, stereoPosition[2]]}
-            isPlaying={isPlaying}
-            volume={volume}
-          />
-        </>
-      ) : (
-        <>
-          <Speaker
-            position={speakerLeftPos}
-            side="left"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-          />
-          <Speaker
-            position={speakerRightPos}
-            side="right"
-            isPlaying={isPlaying}
-            volume={volume}
-            mode={mode}
-          />
-        </>
-      )}
+      <>
+        <SpeakerStand position={[speakerLeftPos[0], 0.6, speakerLeftPos[2]]} height={0.6} width={0.22} depth={0.22} />
+        <Speaker
+          position={speakerLeftPos}
+          side="left"
+          isPlaying={isPlaying}
+          volume={volume}
+          mode={mode}
+        />
+        <SpeakerStand position={[speakerRightPos[0], 0.6, speakerRightPos[2]]} height={0.6} width={0.22} depth={0.22} />
+        <Speaker
+          position={speakerRightPos}
+          side="right"
+          isPlaying={isPlaying}
+          volume={volume}
+          mode={mode}
+        />
+      </>
 
       {/* Audio Visualization Particles - Enhanced */}
       {isPlaying && (

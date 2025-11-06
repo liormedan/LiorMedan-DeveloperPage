@@ -8,7 +8,7 @@ type StereoRoom3DProps = {
   isPlaying: boolean;
   onTogglePlay: () => void;
   volume: number;
-  mode: "stereo" | "mono" | "surround" | "5.1" | "7.1";
+  mode: "stereo" | "mono" | "surround";
   showXRay: boolean;
   vuMeter: number[];
   stereoPosition: [number, number, number];

@@ -8,7 +8,7 @@ type CablesProps = {
   stereoPosition: [number, number, number];
   speakerLeftPos: [number, number, number];
   speakerRightPos: [number, number, number];
-  mode: "stereo" | "mono" | "surround" | "5.1" | "7.1";
+  mode: "stereo" | "mono" | "surround";
 };
 
 export function Cables({ stereoPosition, speakerLeftPos, speakerRightPos, mode }: CablesProps) {

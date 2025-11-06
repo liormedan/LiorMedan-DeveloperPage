@@ -13,8 +13,8 @@ type StereoControlsProps = {
   isPlaying: boolean;
   volume: number;
   onVolumeChange: (volume: number) => void;
-  mode: "stereo" | "mono" | "surround" | "5.1" | "7.1";
-  onModeChange: (mode: "stereo" | "mono" | "surround" | "5.1" | "7.1") => void;
+  mode: "stereo" | "mono" | "surround";
+  onModeChange: (mode: "stereo" | "mono" | "surround") => void;
   showXRay: boolean;
   onXRayToggle: () => void;
   vuMeter: number[];
@@ -48,8 +48,6 @@ export function StereoControls({
       stereo: "סטריאו",
       mono: "מונו",
       surround: "סראונד",
-      "5.1": "5.1",
-      "7.1": "7.1",
       acoustic: "מדריך אקוסטי",
       beforeAfter: "לפני/אחרי",
     },
@@ -60,8 +58,6 @@ export function StereoControls({
       stereo: "Stereo",
       mono: "Mono",
       surround: "Surround",
-      "5.1": "5.1",
-      "7.1": "7.1",
       acoustic: "Acoustic Guide",
       beforeAfter: "Before/After",
     },
@@ -129,7 +125,7 @@ export function StereoControls({
                   {content.mode}
                 </Text3D>
                 <div className="flex gap-2 flex-wrap">
-                  {(["stereo", "mono", "surround", "5.1", "7.1"] as const).map((m) => (
+                  {(["stereo", "mono", "surround"] as const).map((m) => (
                     <Button
                       key={m}
                       variant={mode === m ? "default" : "outline"}

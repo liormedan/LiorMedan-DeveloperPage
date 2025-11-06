@@ -27,7 +27,7 @@ export default function Playground3D() {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [volume, setVolume] = React.useState(50);
-  const [mode, setMode] = React.useState<"stereo" | "mono" | "surround" | "5.1" | "7.1">("5.1");
+  const [mode, setMode] = React.useState<"stereo" | "mono" | "surround">("stereo");
   const [showXRay, setShowXRay] = React.useState(false);
   const [vuMeter, setVuMeter] = React.useState<number[]>(Array(20).fill(0));
   const [showAcousticGuide, setShowAcousticGuide] = React.useState(false);

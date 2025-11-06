@@ -11,7 +11,7 @@ type RoomLayoutProps = {
   speakerLeftPos: [number, number, number];
   speakerRightPos: [number, number, number];
   showAcousticGuide: boolean;
-  mode?: "stereo" | "mono" | "surround" | "5.1" | "7.1";
+  mode?: "stereo" | "mono" | "surround";
 };
 
 export function RoomLayout({
